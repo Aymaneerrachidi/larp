@@ -1935,6 +1935,36 @@ input:focus-visible {
 .photon-card.is-loss .photon-roi, .photon-card.is-loss .photon-stats div:last-child dd { color: #ff5d7a; }
 .photon-logo { position: absolute; z-index: 5; left: 28%; bottom: 2%; width: 46%; height: auto; mix-blend-mode: screen; }
 
+/* Fomo share card: 4:5 mobile trade recap. */
+.fomo-card { width: min(100%, 500px); aspect-ratio: 4 / 5; color: #f6f5fa; background: #4d64ff; border: 0; }
+.fomo-panel { position: absolute; z-index: 2; inset: 0 1.2% 16%; overflow: hidden; background: #05040c; border-radius: 7.4cqw; }
+.fomo-token-row { position: absolute; z-index: 4; inset: 3.2% 3.5% auto; display: grid; grid-template-columns: auto 1fr auto; align-items: start; gap: 2.5cqw; }
+.fomo-token-image { display: grid; width: 13cqw; aspect-ratio: 1; place-items: center; overflow: hidden; color: #17120b; background: #d7ae63; border: 0.7cqw solid #8f6d32; border-radius: 50%; font-size: 5.4cqw; font-weight: 800; }
+.fomo-token-image img, .fomo-avatar img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.fomo-token-row div { display: grid; gap: 1.4cqw; padding-top: 1.3cqw; }.fomo-token-row strong { font-size: 4.6cqw; line-height: 1; }.fomo-token-row div span { color: #89868f; font-size: 3.4cqw; }
+.fomo-token-row time { padding-top: 1.2cqw; color: #45434c; font-size: 3.5cqw; font-weight: 700; }
+.fomo-chart { position: absolute; z-index: 2; top: 20%; left: 1.3%; right: 1.3%; height: 36%; }.fomo-chart svg { width: 100%; height: 100%; overflow: visible; }
+.fomo-chart-line { fill: none; stroke: #08c75b; stroke-linecap: round; stroke-linejoin: round; stroke-width: 6; }.fomo-chart-fill { fill: rgba(8, 199, 91, 0.035); stroke: none; }
+.fomo-card.is-loss .fomo-chart-line { stroke: #ff563c; }.fomo-card.is-loss .fomo-chart-fill { fill: rgba(255, 86, 60, 0.04); }
+.fomo-trade { position: absolute; display: grid; width: 5.2cqw; aspect-ratio: 1; place-items: center; color: #06120a; border: 0.4cqw solid #05040c; border-radius: 50%; font-size: 3.3cqw; font-weight: 800; line-height: 1; }
+.fomo-buy { background: #09c85c; }.fomo-buy.b1 { left: 25.5%; bottom: 6%; }.fomo-buy.b2 { left: 49%; bottom: 9%; }.fomo-buy.b3 { left: 74%; bottom: 5%; }.fomo-sell { right: 0; top: 4%; background: #ff5b39; }
+.fomo-trade-panel { position: absolute; z-index: 5; inset: auto 2.2% 2.3%; height: 35.8%; overflow: hidden; background: #111017; border: 1px solid #292731; border-radius: 5.2cqw; }
+.fomo-trader { display: flex; align-items: center; justify-content: center; gap: 1.4cqw; height: 31%; }.fomo-avatar { display: grid; width: 5.3cqw; aspect-ratio: 1; place-items: center; overflow: hidden; color: #16141b; background: #d7d4da; border-radius: 50%; font-size: 2.5cqw; font-weight: 800; }
+.fomo-trader strong { font-size: 4cqw; font-weight: 500; }.fomo-trader i { color: #85828b; font-style: normal; }
+.fomo-gain { height: 35%; color: #03c85b; font-size: 6.9cqw; font-weight: 600; line-height: 1.15; text-align: center; letter-spacing: -0.04em; white-space: nowrap; }.fomo-gain span { color: #f1eff5; font-size: 4.2cqw; letter-spacing: -0.02em; }.fomo-gain i { color: #03c85b; font-size: 3cqw; font-style: normal; }.fomo-card.is-loss .fomo-gain, .fomo-card.is-loss .fomo-gain i { color: #ff5b39; }
+.fomo-stats { position: absolute; inset: auto 0 0; height: 34%; display: grid; grid-template-columns: repeat(3, 1fr); margin: 0; border-top: 1px solid #2b2932; }.fomo-stats div { display: grid; place-content: center; gap: 0.6cqw; text-align: center; }.fomo-stats div + div { border-left: 1px solid #2b2932; }.fomo-stats dt { color: #8c8992; font-size: 3cqw; }.fomo-stats dd { margin: 0; font-size: 3.7cqw; font-weight: 500; }
+.fomo-footer { position: absolute; z-index: 3; inset: auto 4.5% 1.9%; display: flex; align-items: end; justify-content: space-between; }.fomo-footer > strong { font-size: 8.4cqw; font-weight: 700; letter-spacing: -0.07em; }.fomo-footer > div { display: grid; justify-items: end; gap: 0.7cqw; }.fomo-footer span { color: #aeb8ee; font-size: 3.1cqw; }.fomo-footer b { font-size: 3.7cqw; }
+
+/* Pump.fun app position card: wide native share layout. */
+.pumpfun-card { width: min(100%, 610px); aspect-ratio: 1224 / 1005; color: #f2f1f4; background: #030306; border: 0; }
+.pumpfun-card::before { content: ''; position: absolute; z-index: 1; inset: 0; background: radial-gradient(ellipse at 52% 49%, rgba(20, 21, 32, 0.36), transparent 52%); }
+.pumpfun-token-row { position: absolute; z-index: 4; top: 5.6%; left: 3.8%; display: flex; align-items: center; gap: 3cqw; max-width: 92%; }.pumpfun-token-image { display: grid; width: 9cqw; aspect-ratio: 1; flex: 0 0 auto; place-items: center; overflow: hidden; color: #0d0d10; background: #d7d7d7; border: 0.65cqw solid #242329; border-radius: 3.1cqw; font-size: 4cqw; font-weight: 800; }.pumpfun-token-image img, .pumpfun-user img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.pumpfun-token-row div { display: grid; gap: 0.8cqw; min-width: 0; }.pumpfun-token-row strong { overflow: hidden; font-size: 5.1cqw; line-height: 1.08; text-overflow: ellipsis; white-space: nowrap; }.pumpfun-token-row div span { font-size: 3.2cqw; }
+.pumpfun-content { position: absolute; z-index: 4; inset: 19.8% 3.8% 15.2%; }.pumpfun-profit-label { color: #d3d0d7; font-size: 2.7cqw; }.pumpfun-gain { display: flex; align-items: center; gap: 3cqw; margin-top: 1.2%; color: #59e36d; font-size: 8.7cqw; font-weight: 700; line-height: 1; letter-spacing: -0.045em; white-space: nowrap; }.pumpfun-gain span { padding: 1.5cqw 2.2cqw; color: #58dc69; background: #102516; border: 0.2cqw solid #1f4f2a; border-radius: 2cqw; font-size: 3.6cqw; letter-spacing: -0.015em; }.pumpfun-card.is-loss .pumpfun-gain { color: #ff5b64; }.pumpfun-card.is-loss .pumpfun-gain span { color: #ff6a71; background: #2a1115; border-color: #5c232a; }
+.pumpfun-stats { position: absolute; left: 0; bottom: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 11cqw; margin: 0; }.pumpfun-stats div { display: grid; gap: 1cqw; }.pumpfun-stats dd { margin: 0; font-size: 4.8cqw; font-weight: 600; }.pumpfun-stats dt { color: #c9c6ce; font-size: 2.65cqw; }
+.pumpfun-footer { position: absolute; z-index: 4; left: 3.8%; right: 3.8%; bottom: 4.8%; display: flex; align-items: center; justify-content: space-between; padding-top: 2.8%; border-top: 1px solid #27252c; }.pumpfun-user, .pumpfun-lockup { display: flex; align-items: center; gap: 1.6cqw; }.pumpfun-user > span { display: grid; width: 6.1cqw; aspect-ratio: 1; place-items: center; overflow: hidden; color: #121217; background: #c6c5ca; border-radius: 50%; font-size: 2.8cqw; font-weight: 800; }.pumpfun-user strong { font-size: 4cqw; }
+.pumpfun-lockup > i { display: grid; width: 4.7cqw; aspect-ratio: 1.8 / 1; place-items: center; color: #61dda8; background: #b9c7c5; border: 0.35cqw solid #426d65; border-radius: 999px; font-size: 3.5cqw; font-style: normal; transform: rotate(-48deg); }.pumpfun-lockup strong { color: #d8d6db; font-size: 5.2cqw; letter-spacing: -0.045em; }.pumpfun-lockup strong span { color: #61d57c; }
+
 /* Jupiter Mobile share card — token chart, position gain and mint footer. */
 .jupiter-card {
   width: min(100%, 500px);

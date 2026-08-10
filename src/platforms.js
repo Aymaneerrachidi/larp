@@ -150,6 +150,29 @@ export const platforms = [
     },
   },
   {
+    id: 'fomo',
+    name: 'FOMO',
+    descriptor: 'MEMECOINS',
+    className: 'theme-fomo',
+    mode: 'memecoin',
+    defaults: {
+      pair: 'CATE', displayName: 'Cate', profit: '20,213.54', pnl: '451.22',
+      invested: '4.4K', entry: '256.2K', exit: '1.4M', date: 'Jul 26, 2026',
+      handle: 'Schoen_xyz', inviteCode: 'Schoen_xyz',
+    },
+  },
+  {
+    id: 'pumpfun',
+    name: 'PUMP.FUN',
+    descriptor: 'APP',
+    className: 'theme-pumpfun',
+    mode: 'memecoin',
+    defaults: {
+      pair: 'LARP', displayName: 'LARP Coin Official', profit: '265.99', pnl: '72.34',
+      entry: '74.28K', position: '116.83K', handle: 'anonlarper',
+    },
+  },
+  {
     id: 'phantom',
     name: 'PHANTOM',
     descriptor: 'WALLET',

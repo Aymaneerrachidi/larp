@@ -299,6 +299,70 @@ function PhotonCard({ values, positive, cardRef, media }) {
   )
 }
 
+function FomoCard({ values, positive, cardRef, media }) {
+  const username = String(values.handle || 'anonlarper').replace(/^@/, '')
+  const referral = String(values.inviteCode || username).replace(/^@/, '')
+
+  return (
+    <div ref={cardRef} className={cardClasses('native-share fomo-card', positive, media.backgroundImage)}>
+      <CustomBackground src={media.backgroundImage} />
+      <main className="fomo-panel">
+        <header className="fomo-token-row">
+          <span className="fomo-token-image">{media.coinImage ? <img src={media.coinImage} alt="" /> : values.pair.slice(0, 1)}</span>
+          <div><strong>{values.pair}</strong><span>{values.displayName}</span></div>
+          <time>{values.date}</time>
+        </header>
+        <div className="fomo-chart" aria-hidden="true">
+          <svg viewBox="0 0 900 360" preserveAspectRatio="none">
+            <path className="fomo-chart-fill" d="M0 308 C90 309 126 307 180 305 C226 303 236 298 250 275 C268 243 294 256 311 210 C327 167 337 118 349 153 C365 192 378 223 397 181 C416 141 431 221 453 175 C471 137 484 208 508 176 C530 145 548 210 572 188 C595 167 607 133 634 154 C665 177 675 229 705 213 C734 197 750 246 778 232 C805 219 820 181 839 193 C857 205 866 150 875 92 C882 50 890 40 900 42 L900 360 L0 360 Z" />
+            <path className="fomo-chart-line" d="M0 308 C90 309 126 307 180 305 C226 303 236 298 250 275 C268 243 294 256 311 210 C327 167 337 118 349 153 C365 192 378 223 397 181 C416 141 431 221 453 175 C471 137 484 208 508 176 C530 145 548 210 572 188 C595 167 607 133 634 154 C665 177 675 229 705 213 C734 197 750 246 778 232 C805 219 820 181 839 193 C857 205 866 150 875 92 C882 50 890 40 900 42" />
+          </svg>
+          <span className="fomo-trade fomo-buy b1">+</span><span className="fomo-trade fomo-buy b2">+</span><span className="fomo-trade fomo-buy b3">+</span><span className="fomo-trade fomo-sell">−</span>
+        </div>
+        <section className="fomo-trade-panel">
+          <div className="fomo-trader">
+            <span className="fomo-avatar">{media.avatarImage ? <img src={media.avatarImage} alt="" /> : username.slice(0, 1).toUpperCase()}</span>
+            <strong>@{username}<i>’s trade</i></strong>
+          </div>
+          <div className="fomo-gain">{signed(values.profit, '$')} <span>(<i>▲</i> {values.pnl}%)</span></div>
+          <dl className="fomo-stats">
+            <div><dt>Invested</dt><dd>${values.invested}</dd></div>
+            <div><dt>Entry</dt><dd>${values.entry}</dd></div>
+            <div><dt>Exit</dt><dd>${values.exit}</dd></div>
+          </dl>
+        </section>
+      </main>
+      <footer className="fomo-footer"><strong>fomo</strong><div><span>10% off fees with code</span><b>{referral}</b></div></footer>
+    </div>
+  )
+}
+
+function PumpfunCard({ values, positive, cardRef, media }) {
+  const username = String(values.handle || 'anonlarper').replace(/^@/, '')
+
+  return (
+    <div ref={cardRef} className={cardClasses('native-share pumpfun-card', positive, media.backgroundImage)}>
+      <CustomBackground src={media.backgroundImage} />
+      <header className="pumpfun-token-row">
+        <span className="pumpfun-token-image">{media.coinImage ? <img src={media.coinImage} alt="" /> : values.pair.slice(0, 1)}</span>
+        <div><strong>{values.displayName}</strong><span>${values.pair}</span></div>
+      </header>
+      <main className="pumpfun-content">
+        <span className="pumpfun-profit-label">PROFIT</span>
+        <div className="pumpfun-gain">{signed(values.profit, '$')} <span>▲ {values.pnl}%</span></div>
+        <dl className="pumpfun-stats">
+          <div><dd>${values.entry}</dd><dt>AVERAGE ENTRY</dt></div>
+          <div><dd>${values.position}</dd><dt>MARKET CAP</dt></div>
+        </dl>
+      </main>
+      <footer className="pumpfun-footer">
+        <div className="pumpfun-user"><span>{media.avatarImage ? <img src={media.avatarImage} alt="" /> : username.slice(0, 1).toUpperCase()}</span><strong>{username}</strong></div>
+        <div className="pumpfun-lockup"><i aria-hidden="true">◒</i><strong>pump<span>.</span>fun</strong></div>
+      </footer>
+    </div>
+  )
+}
+
 function JupiterCard({ values, positive, cardRef, media }) {
   return (
     <div ref={cardRef} className={cardClasses('native-share jupiter-card', positive, media.backgroundImage)}>
@@ -362,6 +426,8 @@ const PnlCard = forwardRef(function PnlCard({ platform, values, media = {} }, re
   if (platform.id === 'padre') return <PadreCard values={values} positive={positive} cardRef={ref} media={cardMedia} />
   if (platform.id === 'bullx') return <BullxCard values={values} positive={positive} cardRef={ref} media={cardMedia} />
   if (platform.id === 'photon') return <PhotonCard values={values} positive={positive} cardRef={ref} media={cardMedia} />
+  if (platform.id === 'fomo') return <FomoCard values={values} positive={positive} cardRef={ref} media={cardMedia} />
+  if (platform.id === 'pumpfun') return <PumpfunCard values={values} positive={positive} cardRef={ref} media={cardMedia} />
   if (platform.id === 'jupiter') return <JupiterCard values={values} positive={positive} cardRef={ref} media={cardMedia} />
   return <PhantomWalletCard values={values} positive={positive} cardRef={ref} media={cardMedia} />
 })

@@ -84,6 +84,19 @@ const memeFields = {
     ['invested', 'Acquired USD', '521.50'], ['entry', 'Average entry', '36.11K'],
     ['position', 'Market cap', '2.89M'], ['displayName', 'Display name', 'anonlarper'], ['date', 'Date', '06 Aug 26'],
   ],
+  fomo: [
+    ['pair', 'Token symbol', 'CATE'], ['displayName', 'Token name', 'Cate'],
+    ['profit', 'Profit USD', '20,213.54'], ['pnl', 'PNL %', '451.22'],
+    ['invested', 'Invested USD', '4.4K'], ['entry', 'Entry market cap', '256.2K'],
+    ['exit', 'Exit market cap', '1.4M'], ['date', 'Date', 'Jul 26, 2026'],
+    ['handle', 'Trader handle', 'Schoen_xyz'], ['inviteCode', 'Referral code', 'Schoen_xyz'],
+  ],
+  pumpfun: [
+    ['displayName', 'Token name', 'LARP Coin Official'], ['pair', 'Token symbol', 'LARP'],
+    ['profit', 'Profit USD', '265.99'], ['pnl', 'PNL %', '72.34'],
+    ['entry', 'Average entry', '74.28K'], ['position', 'Market cap', '116.83K'],
+    ['handle', 'Trader name', 'anonlarper'],
+  ],
 }
 
 const walletFields = [
@@ -352,7 +365,7 @@ function App() {
                   onClear={() => clearImage('backgroundImage')}
                   hint="Fills the complete card and crops automatically."
                 />
-                {['gmgn', 'jupiter', 'phantom'].includes(platform.id) && <>
+                {['gmgn', 'jupiter', 'phantom', 'fomo', 'pumpfun'].includes(platform.id) && <>
                   <ImageUpload
                     key={`${platform.id}-coin`}
                     label="Coin image"
@@ -361,13 +374,13 @@ function App() {
                     onClear={() => clearImage('coinImage')}
                     hint="Square image shown beside the token name."
                   />
-                  {platform.id === 'gmgn' && <ImageUpload
-                    key="gmgn-trader"
+                  {['gmgn', 'fomo', 'pumpfun'].includes(platform.id) && <ImageUpload
+                    key={`${platform.id}-trader`}
                     label="Trader image"
                     value={cardMedia.avatarImage}
                     onChange={(file) => uploadImage('avatarImage', file)}
                     onClear={() => clearImage('avatarImage')}
-                    hint="Shown beside the display name like the original card."
+                    hint="Square image shown beside the trader name."
                   />}
                 </>}
                 {['axiom', 'padre', 'phantom'].includes(platform.id) && <ImageUpload
@@ -412,7 +425,7 @@ function App() {
             <p>No wallet. No position. No liquidation risk. Just a polished joke ready for the group chat.</p>
           </div>
           <ol className="how-list">
-            <li><Check size={19} /><div><strong>Pick a terminal</strong><span>Twelve familiar visual systems.</span></div></li>
+            <li><Check size={19} /><div><strong>Pick a terminal</strong><span>Fourteen familiar visual systems.</span></div></li>
             <li><Check size={19} /><div><strong>Invent the trade</strong><span>Your numbers, your alternate reality.</span></div></li>
             <li><Check size={19} /><div><strong>Export the bit</strong><span>Clean image, ready to post.</span></div></li>
           </ol>
