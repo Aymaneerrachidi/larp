@@ -186,12 +186,56 @@ function App() {
     const mediaQuery = gsap.matchMedia()
 
     mediaQuery.add('(prefers-reduced-motion: no-preference)', () => {
-      gsap.from('.hero-reveal', {
+      gsap.from('.site-nav > *', {
+        opacity: 0,
+        y: -16,
+        duration: 0.72,
+        stagger: 0.09,
+        ease: 'power3.out',
+      })
+
+      gsap.from('.brand-hero-copy .hero-reveal', {
         opacity: 0,
         y: 36,
-        duration: 1,
-        stagger: 0.1,
+        duration: 0.95,
+        stagger: 0.11,
         ease: 'power3.out',
+      })
+
+      gsap.from('.brand-hero-media', {
+        opacity: 0,
+        x: 64,
+        rotation: 7,
+        duration: 1.25,
+        delay: 0.18,
+        ease: 'power3.out',
+      })
+
+      gsap.from('.ticker', {
+        scaleY: 0,
+        duration: 0.7,
+        delay: 0.55,
+        transformOrigin: 'center top',
+        ease: 'power3.out',
+      })
+
+      gsap.to('.hero-logo-frame img', {
+        scale: 1.035,
+        duration: 6,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      })
+
+      gsap.to('.scroll-progress', {
+        scaleX: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: document.documentElement,
+          start: 'top top',
+          end: 'max',
+          scrub: 0.15,
+        },
       })
 
       const words = gsap.utils.toArray('.manifesto-word')
@@ -207,6 +251,117 @@ function App() {
         },
       })
 
+      gsap.fromTo('.manifesto-inline-image', { width: '0%' }, {
+        width: 'clamp(96px, 12vw, 178px)',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: manifestoRef.current,
+          start: 'top 76%',
+          end: 'center 52%',
+          scrub: 0.55,
+        },
+      })
+
+      const revealGroups = [
+        ['.generator-section .section-heading > *', '.generator-section', 28],
+        ['.brand-bento .section-heading > *', '.brand-bento', 28],
+        ['.showcase-section .section-heading > *', '.showcase-section', 28],
+        ['.process-intro > *', '.process-story', 30],
+        ['.app-copy > *', '.app-section', 34],
+        ['.site-footer > *', '.site-footer', 18],
+      ]
+
+      revealGroups.forEach(([targets, trigger, distance]) => {
+        gsap.from(targets, {
+          opacity: 0,
+          y: distance,
+          duration: 0.86,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger,
+            start: 'top 84%',
+            once: true,
+          },
+        })
+      })
+
+      gsap.from('.editor-panel', {
+        opacity: 0,
+        x: -52,
+        duration: 0.95,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: '.generator-layout', start: 'top 78%', once: true },
+      })
+
+      gsap.from('.preview-panel', {
+        opacity: 0,
+        x: 52,
+        duration: 0.95,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: '.generator-layout', start: 'top 78%', once: true },
+      })
+
+      gsap.from('.platform-picker button', {
+        opacity: 0,
+        y: 12,
+        duration: 0.46,
+        stagger: 0.025,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: '.platform-picker', start: 'top 86%', once: true },
+      })
+
+      gsap.to('.card-stage', {
+        backgroundPosition: '64px 32px',
+        duration: 12,
+        repeat: -1,
+        ease: 'none',
+      })
+
+      gsap.from('.brand-bento-grid article', {
+        opacity: 0,
+        y: 58,
+        duration: 0.95,
+        stagger: 0.11,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: '.brand-bento-grid', start: 'top 82%', once: true },
+      })
+
+      const platformCount = { value: 0 }
+      gsap.to(platformCount, {
+        value: platforms.length,
+        duration: 1.3,
+        snap: { value: 1 },
+        ease: 'power2.out',
+        onUpdate: () => {
+          const countElement = siteRef.current?.querySelector('.bento-platforms > strong')
+          if (countElement) countElement.textContent = String(platformCount.value)
+        },
+        scrollTrigger: { trigger: '.bento-platforms', start: 'top 78%', once: true },
+      })
+
+      gsap.to('.bento-logo img', {
+        yPercent: 7,
+        scale: 1.08,
+        ease: 'none',
+        scrollTrigger: { trigger: '.bento-logo', start: 'top bottom', end: 'bottom top', scrub: 0.5 },
+      })
+
+      gsap.to('.export-format', {
+        xPercent: -8,
+        ease: 'none',
+        scrollTrigger: { trigger: '.bento-export', start: 'top bottom', end: 'bottom top', scrub: 0.5 },
+      })
+
+      gsap.from('.platform-accordion button', {
+        opacity: 0,
+        y: 52,
+        duration: 0.85,
+        stagger: 0.06,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: '.platform-accordion', start: 'top 82%', once: true },
+      })
+
       gsap.utils.toArray('.process-card').forEach((card) => {
         gsap.fromTo(card, { opacity: 0.28, scale: 0.92 }, {
           opacity: 1,
@@ -219,6 +374,31 @@ function App() {
             scrub: 0.65,
           },
         })
+
+        gsap.from(card.querySelectorAll(':scope > svg, :scope > div > *, :scope > span'), {
+          opacity: 0,
+          y: 28,
+          duration: 0.78,
+          stagger: 0.08,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: card, start: 'top 72%', once: true },
+        })
+      })
+
+      gsap.from('.app-logo', {
+        opacity: 0,
+        x: -54,
+        scale: 1.08,
+        duration: 1.05,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: '.app-section', start: 'top 80%', once: true },
+      })
+
+      gsap.to('.app-logo', {
+        scale: 1.06,
+        yPercent: 4,
+        ease: 'none',
+        scrollTrigger: { trigger: '.app-section', start: 'top bottom', end: 'bottom top', scrub: 0.55 },
       })
     })
 
@@ -250,6 +430,31 @@ function App() {
 
     return () => mediaQuery.revert()
   }, { scope: siteRef })
+
+  useGSAP(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    gsap.fromTo(cardRef.current, {
+      opacity: 0,
+      scale: 0.965,
+      y: 18,
+    }, {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      duration: 0.58,
+      ease: 'power3.out',
+      clearProps: 'transform',
+    })
+
+    gsap.from('.form-grid .input-group, .asset-editor > *', {
+      opacity: 0,
+      y: 10,
+      duration: 0.38,
+      stagger: 0.025,
+      ease: 'power2.out',
+    })
+  }, { scope: siteRef, dependencies: [platformId], revertOnUpdate: true })
 
   const updateValue = (key, value) => {
     setValues((current) => ({ ...current, [key]: value }))
@@ -313,6 +518,15 @@ function App() {
     setMessage(src ? `${platform.name} background selected.` : `${platform.name} default background restored.`)
   }
 
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark'
+    if (!document.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setTheme(nextTheme)
+      return
+    }
+    document.startViewTransition(() => setTheme(nextTheme))
+  }
+
   const exportOptions = {
     cacheBust: true,
     pixelRatio: 2,
@@ -370,6 +584,7 @@ function App() {
 
   return (
     <div className="site-shell" ref={siteRef}>
+      <div className="scroll-progress" aria-hidden="true" />
       <nav className="site-nav" aria-label="Primary navigation">
         <a className="wordmark" href="#top" aria-label="PNLARP home">
           <img src="/logo.jpg" width="1024" height="1024" alt="" />
@@ -380,7 +595,7 @@ function App() {
           <a href="#platforms">Platforms</a>
           <a href="#apps">Get the app</a>
         </div>
-        <button className="icon-button" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>
+        <button className="icon-button" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
       </nav>
