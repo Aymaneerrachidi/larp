@@ -1,14 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { toBlob, toPng } from 'html-to-image'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
+  AppleLogo,
   ArrowRight,
-  ChartLineUp,
-  Check,
   Copy,
+  DeviceMobileCamera,
   DownloadSimple,
+  GooglePlayLogo,
   ImageSquare,
   Moon,
+  Export,
   Shuffle,
+  SlidersHorizontal,
+  SquaresFour,
   Sun,
   TelegramLogo,
   UploadSimple,
@@ -18,8 +25,10 @@ import {
 import PnlCard from './PnlCard.jsx'
 import { futuresPresets, memecoinPresets, platforms } from './platforms.js'
 
+gsap.registerPlugin(useGSAP, ScrollTrigger)
+
 const initialValues = {
-  pair: 'LARP/USDT',
+  pair: 'PNLARP/USDT',
   side: 'LONG',
   leverage: '100',
   pnl: '42069.69',
@@ -35,16 +44,16 @@ const initialValues = {
   displayName: 'Sheep',
   date: '3 Aug 2026',
   handle: 'anonlarper',
-  walletName: 'LARP Wallet',
+  walletName: 'PNLARP Wallet',
   walletBalance: '1,153.48',
-  tokenSymbol: 'LARP',
+  tokenSymbol: 'PNLARP',
   tokenAmount: '8,994,980',
   tokenValue: '1,153.48',
   tokenPnl: '-22.76',
 }
 
 const futuresFields = [
-  ['pair', 'Trading pair', 'LARP/USDT'],
+  ['pair', 'Trading pair', 'PNLARP/USDT'],
   ['leverage', 'Leverage', '100'],
   ['pnl', 'ROE %', '42069.69'],
   ['profit', 'Profit USD', '84,139.38'],
@@ -56,11 +65,11 @@ const futuresFields = [
 
 const memeFields = {
   axiom: [
-    ['pair', 'Token name', 'LARP'], ['profit', 'Profit USD', '2.74K'], ['pnl', 'PNL %', '214.75'],
+    ['pair', 'Token name', 'PNLARP'], ['profit', 'Profit USD', '2.74K'], ['pnl', 'PNL %', '214.75'],
     ['invested', 'Bought USD', '1.28K'], ['position', 'Position USD', '4.02K'], ['handle', 'Handle', 'anonlarper'],
   ],
   gmgn: [
-    ['pair', 'Token name', 'LARP'], ['profit', 'Profit SOL', '300.94'], ['pnl', 'PNL %', '643.03'],
+    ['pair', 'Token name', 'PNLARP'], ['profit', 'Profit SOL', '300.94'], ['pnl', 'PNL %', '643.03'],
     ['hold', 'Hold SOL', '96.9'], ['sold', 'Sold SOL', '302.24'], ['invested', 'Bought SOL', '43.3'],
     ['displayName', 'Display name', 'Sheep'], ['multiplier', 'Multiplier', '13.13K'], ['inviteCode', 'Invite code', 'larp'],
   ],
@@ -70,40 +79,53 @@ const memeFields = {
     ['date', 'Date', '3 Aug 2026'], ['handle', 'Handle', 'anonlarper'],
   ],
   bullx: [
-    ['pair', 'Token name', 'LARP'], ['profit', 'Current PNL SOL', '2.83'],
+    ['pair', 'Token name', 'PNLARP'], ['profit', 'Current PNL SOL', '2.83'],
     ['invested', 'Total invested USD', '524.31'], ['sold', 'Total sold USD', '971.74'],
     ['position', 'Total profit USD', '447.43'],
   ],
   photon: [
-    ['pair', 'Token name', 'LARP'], ['pnl', 'PNL %', '242.53'],
+    ['pair', 'Token name', 'PNLARP'], ['pnl', 'PNL %', '242.53'],
     ['invested', 'Invested SOL', '3.0'], ['sold', 'Invested USD', '556.4336'],
     ['profit', 'Current profit SOL', '7.2758'], ['position', 'Current profit USD', '1349.5058'],
   ],
   jupiter: [
-    ['pair', 'Token name', 'LARP'], ['profit', 'Profit USD', '33.41K'], ['pnl', 'PNL %', '6407'],
+    ['pair', 'Token name', 'PNLARP'], ['profit', 'Profit USD', '33.41K'], ['pnl', 'PNL %', '6407'],
     ['invested', 'Acquired USD', '521.50'], ['entry', 'Average entry', '36.11K'],
     ['position', 'Market cap', '2.89M'], ['displayName', 'Display name', 'anonlarper'], ['date', 'Date', '06 Aug 26'],
   ],
   fomo: [
-    ['pair', 'Token symbol', 'CATE'], ['displayName', 'Token name', 'Cate'],
+    ['pair', 'Token symbol', 'PNLARP'], ['displayName', 'Token name', 'PNLARP'],
     ['profit', 'Profit USD', '20,213.54'], ['pnl', 'PNL %', '451.22'],
     ['invested', 'Invested USD', '4.4K'], ['entry', 'Entry market cap', '256.2K'],
     ['exit', 'Exit market cap', '1.4M'], ['date', 'Date', 'Jul 26, 2026'],
-    ['handle', 'Trader handle', 'Schoen_xyz'], ['inviteCode', 'Referral code', 'Schoen_xyz'],
+    ['handle', 'Trader handle', 'anonlarper'], ['inviteCode', 'Referral code', 'pnlarp'],
   ],
   pumpfun: [
-    ['displayName', 'Token name', 'LARP Coin Official'], ['pair', 'Token symbol', 'LARP'],
+    ['displayName', 'Token name', 'PNLARP Coin Official'], ['pair', 'Token symbol', 'PNLARP'],
     ['profit', 'Profit USD', '265.99'], ['pnl', 'PNL %', '72.34'],
     ['entry', 'Average entry', '74.28K'], ['position', 'Market cap', '116.83K'],
     ['handle', 'Trader name', 'anonlarper'],
   ],
+  moonshot: [
+    ['displayName', 'Token name', 'PNLARP'], ['pair', 'Token symbol', 'PNLARP'],
+    ['profit', 'Profit USD', '4,218.37'], ['pnl', 'Gain %', '684.21'],
+    ['invested', 'Invested USD', '616.52'], ['entry', 'Average entry', '82.4K'],
+    ['position', 'Current value USD', '4.83K'], ['handle', 'Trader handle', 'anonlarper'],
+    ['date', 'Since date', 'Aug 10, 2026'],
+  ],
+  trojan: [
+    ['pair', 'Token name', 'PNLARP'], ['profit', 'Profit SOL', '42.69'], ['pnl', 'PNL %', '1337.42'],
+    ['invested', 'Invested SOL', '3.19'], ['sold', 'Current SOL', '45.88'],
+    ['entry', 'Entry market cap', '74.2K'], ['position', 'Current market cap', '1.07M'],
+    ['handle', 'Referral code', 'anonlarper'],
+  ],
 }
 
 const walletFields = [
-  ['handle', 'Username', 'anonlarper'], ['walletName', 'Wallet name', 'LARP Wallet'],
+  ['handle', 'Username', 'anonlarper'], ['walletName', 'Wallet name', 'PNLARP Wallet'],
   ['walletBalance', 'Wallet balance USD', '1,153.48'], ['profit', 'Wallet PNL USD', '-22.76'],
-  ['pnl', 'Wallet PNL %', '-1.94'], ['pair', 'Token name', 'LARP'],
-  ['tokenSymbol', 'Token symbol', 'LARP'], ['tokenAmount', 'Token amount', '8,994,980'],
+  ['pnl', 'Wallet PNL %', '-1.94'], ['pair', 'Token name', 'PNLARP'],
+  ['tokenSymbol', 'Token symbol', 'PNLARP'], ['tokenAmount', 'Token amount', '8,994,980'],
   ['tokenValue', 'Token value USD', '1,153.48'], ['tokenPnl', 'Token PNL USD', '-22.76'],
 ]
 
@@ -130,12 +152,22 @@ function ImageUpload({ label, value, onChange, onClear, hint }) {
 }
 
 function App() {
-  const [platformId, setPlatformId] = useState('binance')
-  const [values, setValues] = useState(initialValues)
-  const [theme, setTheme] = useState(() => localStorage.getItem('larp-theme') || 'dark')
+  const [platformId, setPlatformId] = useState(() => {
+    const requestedPlatform = new URLSearchParams(window.location.search).get('platform')
+    return platforms.some((item) => item.id === requestedPlatform) ? requestedPlatform : 'binance'
+  })
+  const [values, setValues] = useState(() => ({
+    ...initialValues,
+    ...(platforms.find((item) => item.id === platformId)?.defaults || {}),
+  }))
+  const [theme, setTheme] = useState(() => localStorage.getItem('pnlarp-theme') || 'dark')
   const [exportState, setExportState] = useState('idle')
   const [message, setMessage] = useState('')
   const [media, setMedia] = useState({ coinImages: {}, avatarImages: {}, backgrounds: {} })
+  const [showcaseId, setShowcaseId] = useState('axiom')
+  const siteRef = useRef(null)
+  const manifestoRef = useRef(null)
+  const storyRef = useRef(null)
   const cardRef = useRef(null)
   const platform = useMemo(() => platforms.find((item) => item.id === platformId), [platformId])
   const fields = platform.mode === 'wallet' ? walletFields : platform.mode === 'memecoin' ? memeFields[platform.id] : futuresFields
@@ -147,8 +179,77 @@ function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
-    localStorage.setItem('larp-theme', theme)
+    localStorage.setItem('pnlarp-theme', theme)
   }, [theme])
+
+  useGSAP(() => {
+    const mediaQuery = gsap.matchMedia()
+
+    mediaQuery.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.from('.hero-reveal', {
+        opacity: 0,
+        y: 36,
+        duration: 1,
+        stagger: 0.1,
+        ease: 'power3.out',
+      })
+
+      const words = gsap.utils.toArray('.manifesto-word')
+      gsap.fromTo(words, { opacity: 0.14 }, {
+        opacity: 1,
+        stagger: 0.08,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: manifestoRef.current,
+          start: 'top 72%',
+          end: 'bottom 42%',
+          scrub: 0.8,
+        },
+      })
+
+      gsap.utils.toArray('.process-card').forEach((card) => {
+        gsap.fromTo(card, { opacity: 0.28, scale: 0.92 }, {
+          opacity: 1,
+          scale: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 88%',
+            end: 'center 54%',
+            scrub: 0.65,
+          },
+        })
+      })
+    })
+
+    mediaQuery.add('(min-width: 960px) and (prefers-reduced-motion: no-preference)', () => {
+      const cards = gsap.utils.toArray('.process-card')
+      cards.forEach((card, index) => {
+        if (index === cards.length - 1) return
+        ScrollTrigger.create({
+          trigger: card,
+          start: 'top top+=96',
+          endTrigger: cards[cards.length - 1],
+          end: 'top top+=96',
+          pin: true,
+          pinSpacing: false,
+        })
+        gsap.to(card, {
+          opacity: 0.42,
+          scale: 0.92,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: cards[index + 1],
+            start: 'top bottom',
+            end: 'top top+=96',
+            scrub: true,
+          },
+        })
+      })
+    })
+
+    return () => mediaQuery.revert()
+  }, { scope: siteRef })
 
   const updateValue = (key, value) => {
     setValues((current) => ({ ...current, [key]: value }))
@@ -224,7 +325,7 @@ function App() {
     try {
       const dataUrl = await toPng(cardRef.current, exportOptions)
       const link = document.createElement('a')
-      link.download = `larp-${platformId}-${values.pair.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`
+      link.download = `pnlarp-${platformId}-${values.pair.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`
       link.href = dataUrl
       link.click()
       setExportState('done')
@@ -254,17 +355,30 @@ function App() {
     }
   }
 
+  const manifestoStart = ['PNLARP', 'turns', 'numbers', 'into']
+  const manifestoEnd = ['screenshots', 'people', 'stop', 'scrolling', 'for.']
+  const showcaseItems = [
+    { id: 'binance', name: 'BINANCE', logo: '/binance.svg', width: 24, height: 24 },
+    { id: 'axiom', name: 'AXIOM', logo: '/axiom-logo-original-v3.png', width: 421, height: 360 },
+    { id: 'terminal', name: 'TERMINAL', logo: '/terminal-logo-v2.png', width: 2123, height: 384 },
+    { id: 'gmgn', name: 'GMGN', logo: '/gmgn-logo-v2.png', width: 1478, height: 384 },
+    { id: 'fomo', name: 'FOMO', logo: '/fomo-logo.jpg', width: 400, height: 400 },
+    { id: 'pump', name: 'PUMP.FUN', logo: '/pump-logomark.svg', width: 200, height: 200 },
+    { id: 'moonshot', name: 'MOONSHOT', logo: '/moonshot-logo.svg', width: 56, height: 56 },
+    { id: 'trojan', name: 'TROJAN', logo: '/trojan-logo.png', width: 384, height: 144 },
+  ]
+
   return (
-    <div className="site-shell">
+    <div className="site-shell" ref={siteRef}>
       <nav className="site-nav" aria-label="Primary navigation">
-        <a className="wordmark" href="#top">
-          <span className="wordmark-mask" aria-hidden="true">L</span>
-          LARP
+        <a className="wordmark" href="#top" aria-label="PNLARP home">
+          <img src="/logo.jpg" width="1024" height="1024" alt="" />
+          <span>PNLARP</span>
         </a>
         <div className="nav-links">
           <a href="#generator">Generator</a>
-          <a href="#how">How it works</a>
-          <a href="#token">$LARP</a>
+          <a href="#platforms">Platforms</a>
+          <a href="#apps">Get the app</a>
         </div>
         <button className="icon-button" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
@@ -272,43 +386,41 @@ function App() {
       </nav>
 
       <main id="top">
-        <section className="hero" aria-labelledby="hero-title">
-          <div className="hero-copy">
-            <p className="hero-kicker">THE PROFIT IS TEMPORARY. THE SCREENSHOT IS FOREVER.</p>
-            <h1 id="hero-title">Fake it till<br />you make it.</h1>
-            <p>Generate killer PNL cards for the timeline. Clean, sharp, painfully believable.</p>
-            <div className="hero-actions">
-              <a className="button button-primary" href="#generator">Generate PNL <ArrowRight size={18} /></a>
-              <a className="button button-secondary" href="#token">Meet $LARP</a>
+        <section className="brand-hero" aria-labelledby="hero-title">
+          <div className="brand-hero-copy">
+            <p className="hero-kicker hero-reveal">PNL CARDS FOR THE TIMELINE</p>
+            <h1 id="hero-title" className="hero-reveal"><span className="hero-line hero-line-primary">Make the gain.</span><span className="hero-line hero-line-muted">Own the frame.</span></h1>
+            <p className="hero-reveal">Design sharp, share-ready PNL cards across the platforms traders already recognize.</p>
+            <div className="hero-actions hero-reveal">
+              <a className="button button-primary" href="#generator">Create a PNL <ArrowRight size={18} /></a>
+              <a className="button button-secondary" href="#apps">Get the app</a>
             </div>
           </div>
-          <div className="hero-visual">
-            <img
-              src="/larp-coin.webp"
-              width="1200"
-              height="800"
-              fetchPriority="high"
-              alt="Chrome theatrical mask coin suspended above trading receipts"
-            />
-            <div className="hero-quote">
-              <ChartLineUp size={21} />
-              <span>Market truth</span>
-              <strong>Everyone is up on the timeline.</strong>
+          <div className="brand-hero-media hero-reveal">
+            <div className="hero-logo-frame">
+              <img src="/logo.jpg" width="1024" height="1024" fetchPriority="high" alt="PNLARP monogram" />
             </div>
           </div>
         </section>
 
-        <div className="ticker" aria-hidden="true">
+        <div className="ticker" aria-label="Supported PNL styles">
           <div>
-            <span>LARP +42069%</span><span>COPE +1337%</span><span>REALITY -99%</span><span>SCREENSHOTS +8008%</span>
-            <span>LARP +42069%</span><span>COPE +1337%</span><span>REALITY -99%</span><span>SCREENSHOTS +8008%</span>
+            {platforms.concat(platforms).map((item, index) => <span key={`${item.id}-${index}`}>{item.name}</span>)}
           </div>
         </div>
 
+        <section className="manifesto-section" ref={manifestoRef} aria-label="PNLARP statement">
+          <p>
+            {manifestoStart.map((word) => <span className="manifesto-word" key={word}>{word} </span>)}
+            <span className="manifesto-inline-image"><img src="/logo.jpg" width="1024" height="1024" alt="" /></span>{' '}
+            {manifestoEnd.map((word) => <span className="manifesto-word" key={word}>{word} </span>)}
+          </p>
+        </section>
+
         <section className="generator-section" id="generator" aria-labelledby="generator-title">
           <div className="section-heading">
-            <h2 id="generator-title">Manufacture your alpha.</h2>
-            <p>Choose a terminal, type a fantasy, export the evidence.</p>
+            <h2 id="generator-title">Build the screenshot.</h2>
+            <p>Choose a platform, tune every detail, and export a polished simulated result.</p>
           </div>
 
           <div className="generator-layout">
@@ -365,7 +477,7 @@ function App() {
                   onClear={() => clearImage('backgroundImage')}
                   hint="Fills the complete card and crops automatically."
                 />
-                {['gmgn', 'jupiter', 'phantom', 'fomo', 'pumpfun'].includes(platform.id) && <>
+                {['gmgn', 'jupiter', 'phantom', 'fomo', 'pumpfun', 'moonshot', 'trojan'].includes(platform.id) && <>
                   <ImageUpload
                     key={`${platform.id}-coin`}
                     label="Coin image"
@@ -394,7 +506,7 @@ function App() {
               </div>
 
               <button className="random-button" type="button" onClick={randomize}>
-                <Shuffle size={18} /> Randomize delusion
+                <Shuffle size={18} /> Randomize values
               </button>
             </aside>
 
@@ -414,41 +526,118 @@ function App() {
                   Copy image <Copy size={18} />
                 </button>
               </div>
-              <p>{message || 'Ready to generate your PNL card.'}</p>
+              <p role="status">{message || 'Ready to generate your PNL card.'}</p>
             </div>
           </div>
         </section>
 
-        <section className="how-section" id="how" aria-labelledby="how-title">
-          <div className="how-copy">
-            <h2 id="how-title">Three clicks. Infinite cope.</h2>
-            <p>No wallet. No position. No liquidation risk. Just a polished joke ready for the group chat.</p>
+        <section className="brand-bento" aria-labelledby="brand-tools-title">
+          <div className="section-heading">
+            <h2 id="brand-tools-title">Built for every kind of flex.</h2>
+            <p>One precise editor for futures cards, memecoin wins, wallet screens, and fully custom visuals.</p>
           </div>
-          <ol className="how-list">
-            <li><Check size={19} /><div><strong>Pick a terminal</strong><span>Fourteen familiar visual systems.</span></div></li>
-            <li><Check size={19} /><div><strong>Invent the trade</strong><span>Your numbers, your alternate reality.</span></div></li>
-            <li><Check size={19} /><div><strong>Export the bit</strong><span>Clean image, ready to post.</span></div></li>
-          </ol>
+          <div className="brand-bento-grid">
+            <article className="bento-platforms">
+              <strong>16</strong>
+              <h3>Platform styles, one workflow.</h3>
+              <p>Move from Binance futures to Moonshot memecoins without relearning the editor.</p>
+            </article>
+            <article className="bento-logo">
+              <img src="/logo.jpg" width="1024" height="1024" alt="PNLARP monogram" />
+            </article>
+            <article className="bento-uploads">
+              <ImageSquare size={30} />
+              <h3>Make it yours.</h3>
+              <p>Add a coin image, trader portrait, or full-card background.</p>
+            </article>
+            <article className="bento-export">
+              <div>
+                <DeviceMobileCamera size={34} />
+                <h3>Ready at timeline speed.</h3>
+                <p>Preview live, export a crisp PNG, or copy the result directly.</p>
+              </div>
+              <div className="export-format" aria-hidden="true">PNG</div>
+            </article>
+          </div>
         </section>
 
-        <section className="token-section" id="token" aria-labelledby="token-title">
-          <div className="token-symbol">$LARP</div>
-          <div className="token-copy">
-            <h2 id="token-title">The official currency of imaginary gains.</h2>
-            <p>No promises. No fake utility. Just a meme for anyone whose best trade happened in a screenshot editor.</p>
-            <div className="token-actions">
-              <a className="button button-primary" href="#generator">Generate PNL <ArrowRight size={18} /></a>
-              <a className="social-link" href="#top" aria-label="LARP on X"><XLogo size={20} /></a>
-              <a className="social-link" href="#top" aria-label="LARP on Telegram"><TelegramLogo size={20} /></a>
+        <section className="showcase-section" id="platforms" aria-labelledby="showcase-title">
+          <div className="section-heading">
+            <h2 id="showcase-title">One feed. Many visual languages.</h2>
+            <p>Explore a few of the card families already inside PNLARP.</p>
+          </div>
+          <div className="platform-accordion">
+            {showcaseItems.map((item) => (
+              <button
+                type="button"
+                className={showcaseId === item.id ? 'active' : ''}
+                onClick={() => setShowcaseId(item.id)}
+                onMouseEnter={() => setShowcaseId(item.id)}
+                onFocus={() => setShowcaseId(item.id)}
+                aria-pressed={showcaseId === item.id}
+                key={item.id}
+              >
+                <img className={`platform-logo platform-logo-${item.id}`} src={item.logo} width={item.width} height={item.height} alt={`${item.name} logo`} />
+                <strong>{item.name}</strong>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="process-story" ref={storyRef} aria-labelledby="story-title">
+          <div className="process-intro">
+            <h2 id="story-title">A cleaner path from concept to card.</h2>
+            <p>Three focused moves take you from a blank idea to a finished simulated PNL.</p>
+            <a className="button button-secondary" href="#generator">Open generator <ArrowRight size={18} /></a>
+          </div>
+          <div className="process-stack">
+            <article className="process-card process-card-platform">
+              <SquaresFour size={40} />
+              <div><strong>Pick the visual system</strong><p>Start with futures, memecoin, mobile, or wallet styling.</p></div>
+              <span>BINANCE / AXIOM / FOMO / PHANTOM</span>
+            </article>
+            <article className="process-card process-card-control">
+              <SlidersHorizontal size={40} />
+              <div><strong>Tune the whole story</strong><p>Change values, names, coin art, profiles, and backgrounds in one place.</p></div>
+              <span>LIVE PREVIEW / DIRECT CONTROL</span>
+            </article>
+            <article className="process-card process-card-export">
+              <Export size={40} />
+              <div><strong>Export the finished frame</strong><p>Download a sharp PNG or copy the image straight to your clipboard.</p></div>
+              <span>PNG / COPY / SHARE</span>
+            </article>
+          </div>
+        </section>
+
+        <section className="app-section" id="apps" aria-labelledby="apps-title">
+          <img className="app-logo" src="/logo.jpg" width="1024" height="1024" alt="PNLARP" />
+          <div className="app-copy">
+            <h2 id="apps-title">PNLARP, wherever the timeline takes you.</h2>
+            <p>Open the full generator on desktop, or keep the mobile experience close.</p>
+            <div className="store-links">
+              <a href="https://apps.apple.com/" target="_blank" rel="noreferrer" aria-label="Download on the App Store">
+                <AppleLogo size={28} weight="fill" />
+                <span>Download on the<strong>App Store</strong></span>
+              </a>
+              <a href="https://play.google.com/store/apps" target="_blank" rel="noreferrer" aria-label="Get it on Google Play">
+                <GooglePlayLogo size={28} weight="fill" />
+                <span>Get it on<strong>Google Play</strong></span>
+              </a>
             </div>
           </div>
         </section>
       </main>
 
       <footer className="site-footer">
-        <span>LARP</span>
-        <p>Generate and export your own PNL cards.</p>
-        <span>Not financial advice.</span>
+        <a className="footer-brand" href="#top"><img src="/logo.jpg" width="1024" height="1024" alt="" /><span>PNLARP</span></a>
+        <p>Simulated PNL cards for entertainment and parody.</p>
+        <div className="footer-links">
+          <a href="#generator">Generator</a>
+          <a href="#platforms">Platforms</a>
+          <a href="#apps">Apps</a>
+          <a href="#top" aria-label="PNLARP on X"><XLogo size={20} /></a>
+          <a href="#top" aria-label="PNLARP on Telegram"><TelegramLogo size={20} /></a>
+        </div>
       </footer>
     </div>
   )

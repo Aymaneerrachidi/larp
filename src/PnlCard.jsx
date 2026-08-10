@@ -41,13 +41,13 @@ function cardClasses(base, positive, backgroundImage) {
 }
 
 function compactPair(pair, suffix = 'USDT') {
-  const raw = String(pair || 'LARP').toUpperCase().replace(/\s+/g, '')
+  const raw = String(pair || 'PNLARP').toUpperCase().replace(/\s+/g, '')
   if (raw.includes('/')) return raw.replace('/', '')
   return raw.endsWith(suffix) ? raw : `${raw}${suffix}`
 }
 
 function basePair(pair) {
-  return String(pair || 'LARP').toUpperCase().split('/')[0].replace(/USDT$/, '')
+  return String(pair || 'PNLARP').toUpperCase().split('/')[0].replace(/USDT$/, '')
 }
 
 function cardTimestamp() {
@@ -386,6 +386,63 @@ function JupiterCard({ values, positive, cardRef, media }) {
   )
 }
 
+function MoonshotCard({ values, positive, cardRef, media }) {
+  const username = String(values.handle || 'anonlarper').replace(/^@/, '')
+  return (
+    <div ref={cardRef} className={cardClasses('native-share moonshot-card', positive, media.backgroundImage)}>
+      <CustomBackground src={media.backgroundImage} />
+      <div className="moonshot-orbit" aria-hidden="true"><i /><i /><i /><i /><i /></div>
+      <header className="moonshot-header">
+        <img src="/moonshot-logo.svg" alt="" aria-hidden="true" />
+        <strong>MOONSHOT</strong>
+        <span>@{username}</span>
+      </header>
+      <main className="moonshot-content">
+        <span className="moonshot-token-image">{media.coinImage ? <img src={media.coinImage} alt="" /> : values.pair.slice(0, 1)}</span>
+        <div className="moonshot-token-copy"><strong>{values.displayName || values.pair}</strong><span>${values.pair}</span></div>
+        <span className="moonshot-kicker">MY GAIN SINCE {values.date}</span>
+        <div className="moonshot-gain">{signed(values.pnl)}%</div>
+        <div className="moonshot-profit">{signed(values.profit, '$')} profit</div>
+        <dl className="moonshot-stats">
+          <div><dt>Invested</dt><dd>${values.invested}</dd></div>
+          <div><dt>Current value</dt><dd>${values.position}</dd></div>
+          <div><dt>Average entry</dt><dd>${values.entry}</dd></div>
+        </dl>
+      </main>
+      <footer className="moonshot-footer"><span>Trade memes in a few clicks</span><strong>moonshot.com</strong></footer>
+      
+    </div>
+  )
+}
+
+function TrojanCard({ values, positive, cardRef, media }) {
+  const referral = String(values.handle || 'anonlarper').replace(/^@/, '')
+  return (
+    <div ref={cardRef} className={cardClasses('native-share trojan-card', positive, media.backgroundImage)}>
+      <CustomBackground src={media.backgroundImage} />
+      <img className="trojan-art" src="/trojan-art-b.png" alt="" aria-hidden="true" />
+      <img className="trojan-lockup" src="/trojan-logo.png" alt="Trojan on Solana" />
+      <main className="trojan-content">
+        <div className="trojan-token">
+          <span>{media.coinImage ? <img src={media.coinImage} alt="" /> : values.pair.slice(0, 1)}</span>
+          <div><strong>{values.pair}/SOL</strong><small>POSITION CLOSED</small></div>
+        </div>
+        <div className="trojan-return">{signed(values.pnl)}%</div>
+        <span className="trojan-profit-label">TOTAL PROFIT</span>
+        <div className="trojan-profit">{signed(values.profit)} <SolanaMark /></div>
+        <dl className="trojan-stats">
+          <div><dt>Invested</dt><dd>{values.invested} SOL</dd></div>
+          <div><dt>Current</dt><dd>{values.sold} SOL</dd></div>
+          <div><dt>Entry MC</dt><dd>${values.entry}</dd></div>
+          <div><dt>Current MC</dt><dd>${values.position}</dd></div>
+        </dl>
+      </main>
+      <footer className="trojan-footer"><span>Get 10% off trading fees</span><strong>t.me/solana_trojanbot?start=r-{referral}</strong></footer>
+      
+    </div>
+  )
+}
+
 function PhantomWalletCard({ values, positive, cardRef, media }) {
   const username = String(values.handle || 'anonlarper').replace(/^@/, '')
   return (
@@ -394,7 +451,7 @@ function PhantomWalletCard({ values, positive, cardRef, media }) {
       <img className="phantom-header-art" src="/phantom-header.png" alt="" aria-hidden="true" />
       <header className="phantom-profile">
         <img src={media.avatarImage || '/phantom-default-avatar.png'} alt="" />
-        <div><strong>@{username}</strong><span>{values.walletName || 'LARP Wallet'}</span></div>
+        <div><strong>@{username}</strong><span>{values.walletName || 'PNLARP Wallet'}</span></div>
       </header>
       <main className="phantom-wallet-body">
         <div className="phantom-balance">${values.walletBalance}</div>
@@ -403,7 +460,7 @@ function PhantomWalletCard({ values, positive, cardRef, media }) {
         <nav className="phantom-tabs" aria-label="Wallet asset type"><strong>Tokens</strong><span>Collectibles</span><i>•••</i></nav>
         <article className="phantom-token-row">
           <span className="phantom-token-icon">{media.coinImage ? <img src={media.coinImage} alt="" /> : <b>L</b>}</span>
-          <div><strong>{values.pair || 'LARP'} <i>✓</i></strong><span>{values.tokenAmount} {values.tokenSymbol || 'LARP'}</span></div>
+          <div><strong>{values.pair || 'PNLARP'} <i>✓</i></strong><span>{values.tokenAmount} {values.tokenSymbol || 'PNLARP'}</span></div>
           <div><strong>${values.tokenValue}</strong><span>{signed(values.tokenPnl, '$')}</span></div>
         </article>
       </main>
@@ -429,6 +486,8 @@ const PnlCard = forwardRef(function PnlCard({ platform, values, media = {} }, re
   if (platform.id === 'fomo') return <FomoCard values={values} positive={positive} cardRef={ref} media={cardMedia} />
   if (platform.id === 'pumpfun') return <PumpfunCard values={values} positive={positive} cardRef={ref} media={cardMedia} />
   if (platform.id === 'jupiter') return <JupiterCard values={values} positive={positive} cardRef={ref} media={cardMedia} />
+  if (platform.id === 'moonshot') return <MoonshotCard values={values} positive={positive} cardRef={ref} media={cardMedia} />
+  if (platform.id === 'trojan') return <TrojanCard values={values} positive={positive} cardRef={ref} media={cardMedia} />
   return <PhantomWalletCard values={values} positive={positive} cardRef={ref} media={cardMedia} />
 })
 

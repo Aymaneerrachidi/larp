@@ -54,7 +54,7 @@ export const platforms = [
       { label: 'Axiom cyan', src: '/axiom-gallery-3.png' },
     ],
     defaults: {
-      pair: 'LARP',
+      pair: 'PNLARP',
       pnl: '214.75',
       profit: '2.74K',
       invested: '1.28K',
@@ -69,7 +69,7 @@ export const platforms = [
     className: 'theme-gmgn',
     mode: 'memecoin',
     defaults: {
-      pair: 'LARP',
+      pair: 'PNLARP',
       pnl: '643.03',
       profit: '300.94',
       invested: '43.3',
@@ -92,7 +92,7 @@ export const platforms = [
       { label: 'Terminal void', src: '/terminal-gallery-2.png' },
     ],
     defaults: {
-      pair: 'LARP',
+      pair: 'PNLARP',
       pnl: '-7.13',
       profit: '-34.60',
       invested: '484.89',
@@ -108,7 +108,7 @@ export const platforms = [
     className: 'theme-bullx',
     mode: 'memecoin',
     defaults: {
-      pair: 'LARP',
+      pair: 'PNLARP',
       pnl: '214.75',
       profit: '2.83',
       invested: '524.31',
@@ -124,7 +124,7 @@ export const platforms = [
     className: 'theme-photon',
     mode: 'memecoin',
     defaults: {
-      pair: 'LARP',
+      pair: 'PNLARP',
       pnl: '242.53',
       profit: '7.2758',
       invested: '3.0',
@@ -139,7 +139,7 @@ export const platforms = [
     className: 'theme-jupiter',
     mode: 'memecoin',
     defaults: {
-      pair: 'LARP',
+      pair: 'PNLARP',
       pnl: '6407',
       profit: '33.41K',
       invested: '521.50',
@@ -156,9 +156,9 @@ export const platforms = [
     className: 'theme-fomo',
     mode: 'memecoin',
     defaults: {
-      pair: 'CATE', displayName: 'Cate', profit: '20,213.54', pnl: '451.22',
+      pair: 'PNLARP', displayName: 'PNLARP', profit: '20,213.54', pnl: '451.22',
       invested: '4.4K', entry: '256.2K', exit: '1.4M', date: 'Jul 26, 2026',
-      handle: 'Schoen_xyz', inviteCode: 'Schoen_xyz',
+      handle: 'anonlarper', inviteCode: 'pnlarp',
     },
   },
   {
@@ -168,8 +168,31 @@ export const platforms = [
     className: 'theme-pumpfun',
     mode: 'memecoin',
     defaults: {
-      pair: 'LARP', displayName: 'LARP Coin Official', profit: '265.99', pnl: '72.34',
+      pair: 'PNLARP', displayName: 'PNLARP Coin Official', profit: '265.99', pnl: '72.34',
       entry: '74.28K', position: '116.83K', handle: 'anonlarper',
+    },
+  },
+  {
+    id: 'moonshot',
+    name: 'MOONSHOT',
+    descriptor: 'MEMECOINS',
+    className: 'theme-moonshot',
+    mode: 'memecoin',
+    defaults: {
+      pair: 'PNLARP', displayName: 'PNLARP', profit: '4,218.37', pnl: '684.21',
+      invested: '616.52', entry: '82.4K', position: '4.83K',
+      handle: 'anonlarper', date: 'Aug 10, 2026',
+    },
+  },
+  {
+    id: 'trojan',
+    name: 'TROJAN',
+    descriptor: 'SOLANA BOT',
+    className: 'theme-trojan',
+    mode: 'memecoin',
+    defaults: {
+      pair: 'PNLARP', profit: '42.69', pnl: '1337.42', invested: '3.19',
+      sold: '45.88', entry: '74.2K', position: '1.07M', handle: 'anonlarper',
     },
   },
   {
@@ -180,12 +203,12 @@ export const platforms = [
     mode: 'wallet',
     defaults: {
       handle: 'anonlarper',
-      walletName: 'LARP Wallet',
+      walletName: 'PNLARP Wallet',
       walletBalance: '1,153.48',
       profit: '-22.76',
       pnl: '-1.94',
-      pair: 'LARP',
-      tokenSymbol: 'LARP',
+      pair: 'PNLARP',
+      tokenSymbol: 'PNLARP',
       tokenAmount: '8,994,980',
       tokenValue: '1,153.48',
       tokenPnl: '-22.76',
@@ -194,14 +217,14 @@ export const platforms = [
 ]
 
 export const futuresPresets = [
-  { pair: 'LARP/USDT', side: 'LONG', leverage: '100', pnl: '42069.69', profit: '84,139.38', entry: '0.000042', exit: '0.017681', invested: '2.00' },
+  { pair: 'PNLARP/USDT', side: 'LONG', leverage: '100', pnl: '42069.69', profit: '84,139.38', entry: '0.000042', exit: '0.017681', invested: '2.00' },
   { pair: 'COPE/SOL', side: 'LONG', leverage: '50', pnl: '1337.42', profit: '6,954.58', entry: '0.00031', exit: '0.00446', invested: '520.00' },
   { pair: 'BTC/USDT', side: 'SHORT', leverage: '125', pnl: '911.08', profit: '41,001.17', entry: '118,420.50', exit: '109,783.22', invested: '4,500.00' },
   { pair: 'ETH/USDT', side: 'LONG', leverage: '75', pnl: '808.15', profit: '12,972.44', entry: '3,488.40', exit: '3,864.22', invested: '1,604.99' },
 ]
 
 export const memecoinPresets = [
-  { pair: 'LARP', displayName: 'Sheep', pnl: '643.03', profit: '300.94', invested: '43.3', position: '344.24', hold: '96.9', sold: '302.24', multiplier: '13.13K' },
+  { pair: 'PNLARP', displayName: 'Sheep', pnl: '643.03', profit: '300.94', invested: '43.3', position: '344.24', hold: '96.9', sold: '302.24', multiplier: '13.13K' },
   { pair: 'COPE', displayName: 'Paperhands', pnl: '214.75', profit: '2.74K', invested: '1.28K', position: '4.02K', hold: '1.19K', sold: '2.83K', multiplier: '7.42K' },
   { pair: 'BAGS', displayName: 'Roundtripper', pnl: '-7.13', profit: '-34.60', invested: '484.89', position: '450.29', hold: '0', sold: '450.29', multiplier: '0.93X' },
   { pair: 'TRENCH', displayName: 'Trenchlord', pnl: '8008.15', profit: '12.97K', invested: '162.00', position: '13.13K', hold: '4.18K', sold: '8.95K', multiplier: '81.04K' },
