@@ -89,7 +89,7 @@ function OkxCard({ values, positive, cardRef, media }) {
       <CustomBackground src={media.backgroundImage} />
       <img className="okx-rocket" src="/okx-share-rocket.jpg" alt="" aria-hidden="true" />
       <header className="okx-trader-row">
-        <img src="/okx-share-avatar.png" alt="" />
+        <img src={media.avatarImage || '/okx-share-avatar.png'} alt="" />
         <div><strong>--</strong><span>{values.handle || 'Trader'}</span></div>
         <time>{new Date().toLocaleDateString('en-CA')}<br />{new Date().toLocaleTimeString('en-GB')} (UTC+2)</time>
       </header>
@@ -357,7 +357,7 @@ function PumpfunCard({ values, positive, cardRef, media }) {
       </main>
       <footer className="pumpfun-footer">
         <div className="pumpfun-user"><span>{media.avatarImage ? <img src={media.avatarImage} alt="" /> : username.slice(0, 1).toUpperCase()}</span><strong>{username}</strong></div>
-        <div className="pumpfun-lockup"><i aria-hidden="true">◒</i><strong>pump<span>.</span>fun</strong></div>
+        <div className="pumpfun-lockup"><img src="/pump-logomark.svg" alt="" aria-hidden="true" /><strong>pump<span>.</span>fun</strong></div>
       </footer>
     </div>
   )

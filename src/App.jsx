@@ -383,7 +383,7 @@ function App() {
                     hint="Square image shown beside the trader name."
                   />}
                 </>}
-                {['axiom', 'padre', 'phantom'].includes(platform.id) && <ImageUpload
+                {['axiom', 'padre', 'phantom', 'okx'].includes(platform.id) && <ImageUpload
                   key={`${platform.id}-user`}
                   label={`${platform.name} user image`}
                   value={cardMedia.avatarImage}
