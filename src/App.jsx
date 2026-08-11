@@ -594,7 +594,6 @@ function App() {
           <a href="#generator">Generator</a>
           <a href="#platforms">Platforms</a>
           <a href="#apps">Get the app</a>
-          <span className="nav-shoutout">hey chibs</span>
         </div>
         <button className="icon-button" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
