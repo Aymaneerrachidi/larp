@@ -2617,6 +2617,12 @@ body {
   background: var(--accent);
 }
 
+.nav-shoutout {
+  padding: 7px 14px;
+  border-radius: 999px;
+  color: var(--muted);
+}
+
 .icon-button {
   width: 40px;
   height: 40px;
