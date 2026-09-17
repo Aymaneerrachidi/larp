@@ -4,12 +4,10 @@ import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
-  AppleLogo,
   ArrowRight,
   Copy,
   DeviceMobileCamera,
   DownloadSimple,
-  GooglePlayLogo,
   ImageSquare,
   Moon,
   Export,
@@ -17,10 +15,8 @@ import {
   SlidersHorizontal,
   SquaresFour,
   Sun,
-  TelegramLogo,
   UploadSimple,
   X,
-  XLogo,
 } from '@phosphor-icons/react'
 import PnlCard from './PnlCard.jsx'
 import { futuresPresets, memecoinPresets, platforms } from './platforms.js'
@@ -28,7 +24,7 @@ import { futuresPresets, memecoinPresets, platforms } from './platforms.js'
 gsap.registerPlugin(useGSAP, ScrollTrigger)
 
 const initialValues = {
-  pair: 'PNLARP/USDT',
+  pair: 'LARP/USDT',
   side: 'LONG',
   leverage: '100',
   pnl: '42069.69',
@@ -43,89 +39,89 @@ const initialValues = {
   inviteCode: 'larp',
   displayName: 'Sheep',
   date: '3 Aug 2026',
-  handle: 'anonlarper',
-  walletName: 'PNLARP Wallet',
+  handle: 'larpitalist',
+  walletName: 'Larpitalism Wallet',
   walletBalance: '1,153.48',
-  tokenSymbol: 'PNLARP',
+  tokenSymbol: 'LARP',
   tokenAmount: '8,994,980',
   tokenValue: '1,153.48',
   tokenPnl: '-22.76',
 }
 
 const futuresFields = [
-  ['pair', 'Trading pair', 'PNLARP/USDT'],
+  ['pair', 'Trading pair', 'LARP/USDT'],
   ['leverage', 'Leverage', '100'],
   ['pnl', 'ROE %', '42069.69'],
   ['profit', 'Profit USD', '84,139.38'],
   ['entry', 'Entry price', '0.000042'],
   ['exit', 'Exit price', '0.017681'],
   ['invested', 'Margin USD', '2.00'],
-  ['handle', 'Handle', 'anonlarper'],
+  ['handle', 'Handle', 'larpitalist'],
 ]
 
 const memeFields = {
   axiom: [
-    ['pair', 'Token name', 'PNLARP'], ['profit', 'Profit USD', '2.74K'], ['pnl', 'PNL %', '214.75'],
-    ['invested', 'Bought USD', '1.28K'], ['position', 'Position USD', '4.02K'], ['handle', 'Handle', 'anonlarper'],
+    ['pair', 'Token name', 'LARP'], ['profit', 'Profit USD', '2.74K'], ['pnl', 'PNL %', '214.75'],
+    ['invested', 'Bought USD', '1.28K'], ['position', 'Position USD', '4.02K'], ['handle', 'Handle', 'larpitalist'],
   ],
   gmgn: [
-    ['pair', 'Token name', 'PNLARP'], ['profit', 'Profit SOL', '300.94'], ['pnl', 'PNL %', '643.03'],
+    ['pair', 'Token name', 'LARP'], ['profit', 'Profit SOL', '300.94'], ['pnl', 'PNL %', '643.03'],
     ['hold', 'Hold SOL', '96.9'], ['sold', 'Sold SOL', '302.24'], ['invested', 'Bought SOL', '43.3'],
     ['displayName', 'Display name', 'Sheep'], ['multiplier', 'Multiplier', '13.13K'], ['inviteCode', 'Invite code', 'larp'],
   ],
   padre: [
     ['profit', 'Profit SOL', '-34.60'], ['pnl', 'PNL %', '-7.13'],
     ['invested', 'Total bought SOL', '484.89'], ['sold', 'Total sold SOL', '450.29'],
-    ['date', 'Date', '3 Aug 2026'], ['handle', 'Handle', 'anonlarper'],
+    ['date', 'Date', '3 Aug 2026'], ['handle', 'Handle', 'larpitalist'],
   ],
   bullx: [
-    ['pair', 'Token name', 'PNLARP'], ['profit', 'Current PNL SOL', '2.83'],
+    ['pair', 'Token name', 'LARP'], ['profit', 'Current PNL SOL', '2.83'],
     ['invested', 'Total invested USD', '524.31'], ['sold', 'Total sold USD', '971.74'],
     ['position', 'Total profit USD', '447.43'],
   ],
   photon: [
-    ['pair', 'Token name', 'PNLARP'], ['pnl', 'PNL %', '242.53'],
+    ['pair', 'Token name', 'LARP'], ['pnl', 'PNL %', '242.53'],
     ['invested', 'Invested SOL', '3.0'], ['sold', 'Invested USD', '556.4336'],
     ['profit', 'Current profit SOL', '7.2758'], ['position', 'Current profit USD', '1349.5058'],
   ],
   jupiter: [
-    ['pair', 'Token name', 'PNLARP'], ['profit', 'Profit USD', '33.41K'], ['pnl', 'PNL %', '6407'],
+    ['pair', 'Token name', 'LARP'], ['profit', 'Profit USD', '33.41K'], ['pnl', 'PNL %', '6407'],
     ['invested', 'Acquired USD', '521.50'], ['entry', 'Average entry', '36.11K'],
-    ['position', 'Market cap', '2.89M'], ['displayName', 'Display name', 'anonlarper'], ['date', 'Date', '06 Aug 26'],
+    ['position', 'Market cap', '2.89M'], ['displayName', 'Display name', 'larpitalist'], ['date', 'Date', '06 Aug 26'],
   ],
   fomo: [
-    ['pair', 'Token symbol', 'PNLARP'], ['displayName', 'Token name', 'PNLARP'],
+    ['pair', 'Token symbol', 'LARP'], ['displayName', 'Token name', 'LARP'],
     ['profit', 'Profit USD', '20,213.54'], ['pnl', 'PNL %', '451.22'],
     ['invested', 'Invested USD', '4.4K'], ['entry', 'Entry market cap', '256.2K'],
     ['exit', 'Exit market cap', '1.4M'], ['date', 'Date', 'Jul 26, 2026'],
-    ['handle', 'Trader handle', 'anonlarper'], ['inviteCode', 'Referral code', 'pnlarp'],
+    ['handle', 'Trader handle', 'larpitalist'], ['inviteCode', 'Referral code', 'larpitalism'],
   ],
   pumpfun: [
-    ['displayName', 'Token name', 'PNLARP Coin Official'], ['pair', 'Token symbol', 'PNLARP'],
+    ['displayName', 'Token name', 'Larp Coin'], ['pair', 'Token symbol', 'LARP'],
     ['profit', 'Profit USD', '265.99'], ['pnl', 'PNL %', '72.34'],
     ['entry', 'Average entry', '74.28K'], ['position', 'Market cap', '116.83K'],
-    ['handle', 'Trader name', 'anonlarper'],
+    ['handle', 'Trader name', 'larpitalist'],
   ],
   moonshot: [
-    ['displayName', 'Token name', 'PNLARP'], ['pair', 'Token symbol', 'PNLARP'],
+    ['displayName', 'Token name', 'LARP'], ['pair', 'Token symbol', 'LARP'],
     ['profit', 'Profit USD', '4,218.37'], ['pnl', 'Gain %', '684.21'],
     ['invested', 'Invested USD', '616.52'], ['entry', 'Average entry', '82.4K'],
-    ['position', 'Current value USD', '4.83K'], ['handle', 'Trader handle', 'anonlarper'],
+    ['position', 'Current value USD', '4.83K'], ['handle', 'Trader handle', 'larpitalist'],
     ['date', 'Since date', 'Aug 10, 2026'],
   ],
   trojan: [
-    ['pair', 'Token name', 'PNLARP'], ['profit', 'Profit SOL', '42.69'], ['pnl', 'PNL %', '1337.42'],
+    ['pair', 'Token name', 'LARP'], ['profit', 'Profit SOL', '42.69'], ['pnl', 'PNL %', '1337.42'],
     ['invested', 'Invested SOL', '3.19'], ['sold', 'Current SOL', '45.88'],
     ['entry', 'Entry market cap', '74.2K'], ['position', 'Current market cap', '1.07M'],
-    ['handle', 'Referral code', 'anonlarper'],
+    ['handle', 'Referral code', 'larpitalist'],
   ],
 }
 
 const walletFields = [
-  ['handle', 'Username', 'anonlarper'], ['walletName', 'Wallet name', 'PNLARP Wallet'],
+  ['handle', 'Username', 'larpitalist'], ['walletName', 'Wallet name', 'Larpitalism Wallet'],
   ['walletBalance', 'Wallet balance USD', '1,153.48'], ['profit', 'Wallet PNL USD', '-22.76'],
-  ['pnl', 'Wallet PNL %', '-1.94'], ['pair', 'Token name', 'PNLARP'],
-  ['tokenSymbol', 'Token symbol', 'PNLARP'], ['tokenAmount', 'Token amount', '8,994,980'],
+  ['pnl', 'Wallet PNL %', '-1.94'], ['pair', 'Token name', 'LARP'],
+  ['tokenSymbol', 'Token symbol', 'LARP'], ['tokenAmount', 'Token amount', '8,994,980'],
   ['tokenValue', 'Token value USD', '1,153.48'], ['tokenPnl', 'Token PNL USD', '-22.76'],
 ]
 
@@ -160,7 +156,7 @@ function App() {
     ...initialValues,
     ...(platforms.find((item) => item.id === platformId)?.defaults || {}),
   }))
-  const [theme, setTheme] = useState(() => localStorage.getItem('pnlarp-theme') || 'dark')
+  const [theme, setTheme] = useState(() => localStorage.getItem('larpitalism-theme') || 'light')
   const [exportState, setExportState] = useState('idle')
   const [message, setMessage] = useState('')
   const [media, setMedia] = useState({ coinImages: {}, avatarImages: {}, backgrounds: {} })
@@ -179,256 +175,17 @@ function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
-    localStorage.setItem('pnlarp-theme', theme)
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#22231f' : '#f6f4ed')
+    localStorage.setItem('larpitalism-theme', theme)
   }, [theme])
 
   useGSAP(() => {
-    const mediaQuery = gsap.matchMedia()
-
-    mediaQuery.add('(prefers-reduced-motion: no-preference)', () => {
-      gsap.from('.site-nav > *', {
-        opacity: 0,
-        y: -16,
-        duration: 0.72,
-        stagger: 0.09,
-        ease: 'power3.out',
-      })
-
-      gsap.from('.brand-hero-copy .hero-reveal', {
-        opacity: 0,
-        y: 36,
-        duration: 0.95,
-        stagger: 0.11,
-        ease: 'power3.out',
-      })
-
-      gsap.from('.brand-hero-media', {
-        opacity: 0,
-        x: 64,
-        rotation: 7,
-        duration: 1.25,
-        delay: 0.18,
-        ease: 'power3.out',
-      })
-
-      gsap.from('.ticker', {
-        scaleY: 0,
-        duration: 0.7,
-        delay: 0.55,
-        transformOrigin: 'center top',
-        ease: 'power3.out',
-      })
-
-      gsap.to('.hero-logo-frame img', {
-        scale: 1.035,
-        duration: 6,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-      })
-
-      gsap.to('.scroll-progress', {
-        scaleX: 1,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: document.documentElement,
-          start: 'top top',
-          end: 'max',
-          scrub: 0.15,
-        },
-      })
-
-      const words = gsap.utils.toArray('.manifesto-word')
-      gsap.fromTo(words, { opacity: 0.14 }, {
-        opacity: 1,
-        stagger: 0.08,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: manifestoRef.current,
-          start: 'top 72%',
-          end: 'bottom 42%',
-          scrub: 0.8,
-        },
-      })
-
-      gsap.fromTo('.manifesto-inline-image', { width: '0%' }, {
-        width: 'clamp(96px, 12vw, 178px)',
-        ease: 'none',
-        scrollTrigger: {
-          trigger: manifestoRef.current,
-          start: 'top 76%',
-          end: 'center 52%',
-          scrub: 0.55,
-        },
-      })
-
-      const revealGroups = [
-        ['.generator-section .section-heading > *', '.generator-section', 28],
-        ['.brand-bento .section-heading > *', '.brand-bento', 28],
-        ['.showcase-section .section-heading > *', '.showcase-section', 28],
-        ['.process-intro > *', '.process-story', 30],
-        ['.app-copy > *', '.app-section', 34],
-        ['.site-footer > *', '.site-footer', 18],
-      ]
-
-      revealGroups.forEach(([targets, trigger, distance]) => {
-        gsap.from(targets, {
-          opacity: 0,
-          y: distance,
-          duration: 0.86,
-          stagger: 0.1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger,
-            start: 'top 84%',
-            once: true,
-          },
-        })
-      })
-
-      gsap.from('.editor-panel', {
-        opacity: 0,
-        x: -52,
-        duration: 0.95,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: '.generator-layout', start: 'top 78%', once: true },
-      })
-
-      gsap.from('.preview-panel', {
-        opacity: 0,
-        x: 52,
-        duration: 0.95,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: '.generator-layout', start: 'top 78%', once: true },
-      })
-
-      gsap.from('.platform-picker button', {
-        opacity: 0,
-        y: 12,
-        duration: 0.46,
-        stagger: 0.025,
-        ease: 'power2.out',
-        scrollTrigger: { trigger: '.platform-picker', start: 'top 86%', once: true },
-      })
-
-      gsap.to('.card-stage', {
-        backgroundPosition: '64px 32px',
-        duration: 12,
-        repeat: -1,
-        ease: 'none',
-      })
-
-      gsap.from('.brand-bento-grid article', {
-        opacity: 0,
-        y: 58,
-        duration: 0.95,
-        stagger: 0.11,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: '.brand-bento-grid', start: 'top 82%', once: true },
-      })
-
-      const platformCount = { value: 0 }
-      gsap.to(platformCount, {
-        value: platforms.length,
-        duration: 1.3,
-        snap: { value: 1 },
-        ease: 'power2.out',
-        onUpdate: () => {
-          const countElement = siteRef.current?.querySelector('.bento-platforms > strong')
-          if (countElement) countElement.textContent = String(platformCount.value)
-        },
-        scrollTrigger: { trigger: '.bento-platforms', start: 'top 78%', once: true },
-      })
-
-      gsap.to('.bento-logo img', {
-        yPercent: 7,
-        scale: 1.08,
-        ease: 'none',
-        scrollTrigger: { trigger: '.bento-logo', start: 'top bottom', end: 'bottom top', scrub: 0.5 },
-      })
-
-      gsap.to('.export-format', {
-        xPercent: -8,
-        ease: 'none',
-        scrollTrigger: { trigger: '.bento-export', start: 'top bottom', end: 'bottom top', scrub: 0.5 },
-      })
-
-      gsap.from('.platform-accordion button', {
-        opacity: 0,
-        y: 52,
-        duration: 0.85,
-        stagger: 0.06,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: '.platform-accordion', start: 'top 82%', once: true },
-      })
-
-      gsap.utils.toArray('.process-card').forEach((card) => {
-        gsap.fromTo(card, { opacity: 0.28, scale: 0.92 }, {
-          opacity: 1,
-          scale: 1,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 88%',
-            end: 'center 54%',
-            scrub: 0.65,
-          },
-        })
-
-        gsap.from(card.querySelectorAll(':scope > svg, :scope > div > *, :scope > span'), {
-          opacity: 0,
-          y: 28,
-          duration: 0.78,
-          stagger: 0.08,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: card, start: 'top 72%', once: true },
-        })
-      })
-
-      gsap.from('.app-logo', {
-        opacity: 0,
-        x: -54,
-        scale: 1.08,
-        duration: 1.05,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: '.app-section', start: 'top 80%', once: true },
-      })
-
-      gsap.to('.app-logo', {
-        scale: 1.06,
-        yPercent: 4,
-        ease: 'none',
-        scrollTrigger: { trigger: '.app-section', start: 'top bottom', end: 'bottom top', scrub: 0.55 },
-      })
+    const motion = gsap.matchMedia()
+    motion.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.from('.hero-reveal', { opacity: 0, y: 24, duration: 0.8, stagger: 0.1, ease: 'power3.out' })
+      gsap.to('.scroll-progress', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: document.documentElement, start: 'top top', end: 'max', scrub: true } })
     })
-
-    mediaQuery.add('(min-width: 960px) and (prefers-reduced-motion: no-preference)', () => {
-      const cards = gsap.utils.toArray('.process-card')
-      cards.forEach((card, index) => {
-        if (index === cards.length - 1) return
-        ScrollTrigger.create({
-          trigger: card,
-          start: 'top top+=96',
-          endTrigger: cards[cards.length - 1],
-          end: 'top top+=96',
-          pin: true,
-          pinSpacing: false,
-        })
-        gsap.to(card, {
-          opacity: 0.42,
-          scale: 0.92,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: cards[index + 1],
-            start: 'top bottom',
-            end: 'top top+=96',
-            scrub: true,
-          },
-        })
-      })
-    })
-
-    return () => mediaQuery.revert()
+    return () => motion.revert()
   }, { scope: siteRef })
 
   useGSAP(() => {
@@ -539,7 +296,7 @@ function App() {
     try {
       const dataUrl = await toPng(cardRef.current, exportOptions)
       const link = document.createElement('a')
-      link.download = `pnlarp-${platformId}-${values.pair.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`
+      link.download = `larpitalism-${platformId}-${values.pair.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`
       link.href = dataUrl
       link.click()
       setExportState('done')
@@ -569,31 +326,32 @@ function App() {
     }
   }
 
-  const manifestoStart = ['PNLARP', 'turns', 'numbers', 'into']
-  const manifestoEnd = ['screenshots', 'people', 'stop', 'scrolling', 'for.']
+  const manifestoStart = ['Big', 'ideas.', 'Unreal', 'gains.']
+  const manifestoEnd = ['Your', 'next', 'post', 'starts', 'here.']
   const showcaseItems = [
     { id: 'binance', name: 'BINANCE', logo: '/binance.svg', width: 24, height: 24 },
     { id: 'axiom', name: 'AXIOM', logo: '/axiom-logo-original-v3.png', width: 421, height: 360 },
-    { id: 'terminal', name: 'TERMINAL', logo: '/terminal-logo-v2.png', width: 2123, height: 384 },
+    { id: 'padre', name: 'TERMINAL', logo: '/terminal-logo-v2.png', width: 2123, height: 384 },
     { id: 'gmgn', name: 'GMGN', logo: '/gmgn-logo-v2.png', width: 1478, height: 384 },
     { id: 'fomo', name: 'FOMO', logo: '/fomo-logo.jpg', width: 400, height: 400 },
-    { id: 'pump', name: 'PUMP.FUN', logo: '/pump-logomark.svg', width: 200, height: 200 },
+    { id: 'pumpfun', name: 'PUMP.FUN', logo: '/pump-logomark.svg', width: 200, height: 200 },
     { id: 'moonshot', name: 'MOONSHOT', logo: '/moonshot-logo.svg', width: 56, height: 56 },
     { id: 'trojan', name: 'TROJAN', logo: '/trojan-logo.png', width: 384, height: 144 },
   ]
 
   return (
     <div className="site-shell" ref={siteRef}>
+      <a className="skip-link" href="#generator">Skip to editor</a>
       <div className="scroll-progress" aria-hidden="true" />
       <nav className="site-nav" aria-label="Primary navigation">
-        <a className="wordmark" href="#top" aria-label="PNLARP home">
-          <img src="/logo.jpg" width="1024" height="1024" alt="" />
-          <span>PNLARP</span>
+        <a className="wordmark" href="#top" aria-label="LARPITALISM home">
+          <img src="/brand/larpitalism-mark-small.png" width="128" height="128" alt="" />
+          <span>LARPITALISM</span>
         </a>
         <div className="nav-links">
-          <a href="#generator">Generator</a>
-          <a href="#platforms">Platforms</a>
-          <a href="#apps">Get the app</a>
+          <a href="#generator">The studio</a>
+          <a href="#platforms">Templates</a>
+          <a href="#how-it-works">How it works</a>
         </div>
         <button className="icon-button" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
@@ -603,18 +361,28 @@ function App() {
       <main id="top">
         <section className="brand-hero" aria-labelledby="hero-title">
           <div className="brand-hero-copy">
-            <p className="hero-kicker hero-reveal">PNL CARDS FOR THE TIMELINE</p>
-            <h1 id="hero-title" className="hero-reveal"><span className="hero-line hero-line-primary">Make the gain.</span><span className="hero-line hero-line-muted">Own the frame.</span></h1>
-            <p className="hero-reveal">Design sharp, share-ready PNL cards across the platforms traders already recognize.</p>
+            <p className="hero-kicker hero-reveal">THE PNL DESIGN STUDIO</p>
+            <h1 id="hero-title" className="hero-reveal"><span className="hero-line hero-line-primary">Unreal gains.</span><span className="hero-line hero-line-muted">Serious business.</span></h1>
+            <p className="hero-reveal">Turn imaginary trades into beautifully made cards. Pick a template, make it yours, and give the timeline something to talk about.</p>
             <div className="hero-actions hero-reveal">
-              <a className="button button-primary" href="#generator">Create a PNL <ArrowRight size={18} /></a>
-              <a className="button button-secondary" href="#apps">Get the app</a>
+              <a className="button button-primary" href="#generator">Make your card <ArrowRight size={18} /></a>
+              <a className="text-link" href="#platforms">Explore templates <ArrowRight size={17} /></a>
             </div>
+            <div className="hero-note hero-reveal"><span /> Free to create. No account needed.</div>
           </div>
-          <div className="brand-hero-media hero-reveal">
-            <div className="hero-logo-frame">
-              <img src="/logo.jpg" width="1024" height="1024" fetchPriority="high" alt="PNLARP monogram" />
+          <div className="brand-hero-media hero-reveal" aria-label="Example simulated trading card">
+            <div className="hero-art-label"><span>THE LARPITALIST</span><span>NO. 001 / &infin;</span></div>
+            <div className="sample-card">
+              <div className="sample-top"><span className="sample-brand"><img src="/brand/larpitalism-mark-small.png" width="128" height="128" alt="" />LARPITALISM</span><span>SIMULATED</span></div>
+              <div className="sample-pair">BTC / USDT <span>LONG &middot; 20&times;</span></div>
+              <span className="sample-label">Return on imagination</span>
+              <strong className="sample-return">+1,284<span>.69%</span></strong>
+              <svg className="sample-chart" viewBox="0 0 400 110" aria-hidden="true"><path d="M0 100 28 96 42 102 68 78 90 83 112 68 133 73 160 40 182 54 210 30 236 41 256 20 282 32 312 9 333 20 362 3 400 0" /></svg>
+              <div className="sample-stats"><span>ENTRY PRICE<strong>$62,418.50</strong></span><span>EXIT PRICE<strong>$102,511.80</strong></span><span>STATUS<strong>Just a concept.</strong></span></div>
+              <div className="sample-bottom"><span>Made up trades. Well-made cards.</span><span>&#8599;</span></div>
             </div>
+            <div className="paper-stamp">100%<span>UNREAL</span></div>
+            <div className="hero-art-footer"><span>A LITTLE CREATIVE LICENSE.</span><span>&#8599;</span></div>
           </div>
         </section>
 
@@ -624,22 +392,24 @@ function App() {
           </div>
         </div>
 
-        <section className="manifesto-section" ref={manifestoRef} aria-label="PNLARP statement">
+        <section className="manifesto-section" ref={manifestoRef} aria-label="LARPITALISM statement">
           <p>
             {manifestoStart.map((word) => <span className="manifesto-word" key={word}>{word} </span>)}
-            <span className="manifesto-inline-image"><img src="/logo.jpg" width="1024" height="1024" alt="" /></span>{' '}
+            <span className="manifesto-inline-image"><img src="/brand/larpitalism-mark-small.png" width="128" height="128" alt="" /></span>{' '}
             {manifestoEnd.map((word) => <span className="manifesto-word" key={word}>{word} </span>)}
           </p>
         </section>
 
         <section className="generator-section" id="generator" aria-labelledby="generator-title">
           <div className="section-heading">
-            <h2 id="generator-title">Build the screenshot.</h2>
-            <p>Choose a platform, tune every detail, and export a polished simulated result.</p>
+            <h2 id="generator-title">Your card. Your call.</h2>
+            <p>Choose a style. Adjust the details. Watch it come together.</p>
           </div>
 
           <div className="generator-layout">
             <aside className="editor-panel">
+              <div className="editor-heading"><span>01 / MAKE IT YOURS</span><SlidersHorizontal size={18} /></div>
+              <h3 className="editor-title">Choose your canvas</h3>
               <div className="platform-picker" role="group" aria-label="Card style">
                 {platforms.map((item) => (
                   <button
@@ -659,7 +429,7 @@ function App() {
                   <span>Direction</span>
                   <span className="segmented">
                     {['LONG', 'SHORT'].map((side) => (
-                      <button type="button" className={values.side === side ? 'selected' : ''} onClick={() => updateValue('side', side)} key={side}>{side}</button>
+                      <button type="button" className={values.side === side ? 'selected' : ''} aria-pressed={values.side === side} onClick={() => updateValue('side', side)} key={side}>{side}</button>
                     ))}
                   </span>
                 </label>}
@@ -727,7 +497,7 @@ function App() {
 
             <div className="preview-panel">
               <div className="preview-toolbar">
-                <span>LIVE PREVIEW</span>
+                <span>02 / LIVE PREVIEW</span>
                 <span>{platform.name} STYLE</span>
               </div>
               <div className="card-stage">
@@ -741,24 +511,24 @@ function App() {
                   Copy image <Copy size={18} />
                 </button>
               </div>
-              <p role="status">{message || 'Ready to generate your PNL card.'}</p>
+              <p role="status">{message || 'Your canvas is ready. All values are simulated.'}</p>
             </div>
           </div>
         </section>
 
         <section className="brand-bento" aria-labelledby="brand-tools-title">
           <div className="section-heading">
-            <h2 id="brand-tools-title">Built for every kind of flex.</h2>
-            <p>One precise editor for futures cards, memecoin wins, wallet screens, and fully custom visuals.</p>
+            <h2 id="brand-tools-title">Small details. Big main-character energy.</h2>
+            <p>From the first number to the final pixel, you&#8217;re in control.</p>
           </div>
           <div className="brand-bento-grid">
             <article className="bento-platforms">
               <strong>16</strong>
-              <h3>Platform styles, one workflow.</h3>
+              <h3>Familiar looks. Fresh possibilities.</h3>
               <p>Move from Binance futures to Moonshot memecoins without relearning the editor.</p>
             </article>
             <article className="bento-logo">
-              <img src="/logo.jpg" width="1024" height="1024" alt="PNLARP monogram" />
+              <img src="/brand/larpitalism-mark.png" width="512" height="512" alt="LARPITALISM monogram" />
             </article>
             <article className="bento-uploads">
               <ImageSquare size={30} />
@@ -778,15 +548,15 @@ function App() {
 
         <section className="showcase-section" id="platforms" aria-labelledby="showcase-title">
           <div className="section-heading">
-            <h2 id="showcase-title">One feed. Many visual languages.</h2>
-            <p>Explore a few of the card families already inside PNLARP.</p>
+            <h2 id="showcase-title">Find your signature style.</h2>
+            <p>Futures, memecoins, and wallets. Choose a template to start creating.</p>
           </div>
           <div className="platform-accordion">
             {showcaseItems.map((item) => (
               <button
                 type="button"
                 className={showcaseId === item.id ? 'active' : ''}
-                onClick={() => setShowcaseId(item.id)}
+                onClick={() => { setShowcaseId(item.id); choosePlatform(platforms.find((platform) => platform.id === item.id)); document.getElementById('generator').scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }) }}
                 onMouseEnter={() => setShowcaseId(item.id)}
                 onFocus={() => setShowcaseId(item.id)}
                 aria-pressed={showcaseId === item.id}
@@ -799,9 +569,10 @@ function App() {
           </div>
         </section>
 
-        <section className="process-story" ref={storyRef} aria-labelledby="story-title">
+        <section className="process-story" id="how-it-works" ref={storyRef} aria-labelledby="story-title">
           <div className="process-intro">
-            <h2 id="story-title">A cleaner path from concept to card.</h2>
+            <h2 id="story-title">Three steps.
+One good-looking post.</h2>
             <p>Three focused moves take you from a blank idea to a finished simulated PNL.</p>
             <a className="button button-secondary" href="#generator">Open generator <ArrowRight size={18} /></a>
           </div>
@@ -814,7 +585,7 @@ function App() {
             <article className="process-card process-card-control">
               <SlidersHorizontal size={40} />
               <div><strong>Tune the whole story</strong><p>Change values, names, coin art, profiles, and backgrounds in one place.</p></div>
-              <span>LIVE PREVIEW / DIRECT CONTROL</span>
+              <span>02 / LIVE PREVIEW / DIRECT CONTROL</span>
             </article>
             <article className="process-card process-card-export">
               <Export size={40} />
@@ -825,33 +596,23 @@ function App() {
         </section>
 
         <section className="app-section" id="apps" aria-labelledby="apps-title">
-          <img className="app-logo" src="/logo.jpg" width="1024" height="1024" alt="PNLARP" />
           <div className="app-copy">
-            <h2 id="apps-title">PNLARP, wherever the timeline takes you.</h2>
-            <p>Open the full generator on desktop, or keep the mobile experience close.</p>
-            <div className="store-links">
-              <a href="https://apps.apple.com/" target="_blank" rel="noreferrer" aria-label="Download on the App Store">
-                <AppleLogo size={28} weight="fill" />
-                <span>Download on the<strong>App Store</strong></span>
-              </a>
-              <a href="https://play.google.com/store/apps" target="_blank" rel="noreferrer" aria-label="Get it on Google Play">
-                <GooglePlayLogo size={28} weight="fill" />
-                <span>Get it on<strong>Google Play</strong></span>
-              </a>
-            </div>
+            <p className="eyebrow">LESS OVERTHINKING. MORE CREATING.</p>
+            <h2 id="apps-title">Made for the bit.<br />Great on your feed.</h2>
+            <p>Your next card is a few clicks away. Create right in your browser, on desktop or mobile.</p>
+            <a className="button button-primary" href="#generator">Let&#8217;s make something <ArrowRight size={18} /></a>
           </div>
+          <img className="app-logo" src="/brand/larpitalism-mark.png" width="160" height="160" alt="Larpitalism monogram" />
         </section>
       </main>
 
       <footer className="site-footer">
-        <a className="footer-brand" href="#top"><img src="/logo.jpg" width="1024" height="1024" alt="" /><span>PNLARP</span></a>
+        <a className="footer-brand" href="#top"><img src="/brand/larpitalism-mark-small.png" width="128" height="128" alt="" /><span>LARPITALISM</span></a>
         <p>Simulated PNL cards for entertainment and parody.</p>
         <div className="footer-links">
-          <a href="#generator">Generator</a>
-          <a href="#platforms">Platforms</a>
-          <a href="#apps">Apps</a>
-          <a href="#top" aria-label="PNLARP on X"><XLogo size={20} /></a>
-          <a href="#top" aria-label="PNLARP on Telegram"><TelegramLogo size={20} /></a>
+          <a href="#generator">The studio</a>
+          <a href="#platforms">Templates</a>
+          <a href="#how-it-works">How it works</a>
         </div>
       </footer>
     </div>

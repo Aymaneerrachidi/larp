@@ -41,13 +41,13 @@ function cardClasses(base, positive, backgroundImage) {
 }
 
 function compactPair(pair, suffix = 'USDT') {
-  const raw = String(pair || 'PNLARP').toUpperCase().replace(/\s+/g, '')
+  const raw = String(pair || 'LARP').toUpperCase().replace(/\s+/g, '')
   if (raw.includes('/')) return raw.replace('/', '')
   return raw.endsWith(suffix) ? raw : `${raw}${suffix}`
 }
 
 function basePair(pair) {
-  return String(pair || 'PNLARP').toUpperCase().split('/')[0].replace(/USDT$/, '')
+  return String(pair || 'LARP').toUpperCase().split('/')[0].replace(/USDT$/, '')
 }
 
 function cardTimestamp() {
@@ -75,7 +75,7 @@ function BinanceCard({ values, positive, cardRef, media }) {
       </main>
       <footer className="binance-share-footer">
         <div className="binance-lockup"><img src="/binance.svg" alt="" /><strong><span>BINANCE</span>FUTURES</strong></div>
-        <span>Referral code {values.handle || 'anonlarper'}</span>
+        <span>Referral code {values.handle || 'larpitalist'}</span>
         <WebsiteQr className="binance-qr" />
       </footer>
       
@@ -127,7 +127,7 @@ function HyperliquidCard({ values, positive, cardRef, media }) {
         <dl className="hyper-price-list">
           <div><dt>Entry Price</dt><dd>{values.entry}</dd></div>
           <div><dt>Mark Price</dt><dd>{values.exit}</dd></div>
-          <div><dt>Referral Code:</dt><dd>join/{values.handle || 'anonlarper'}</dd></div>
+          <div><dt>Referral Code:</dt><dd>join/{values.handle || 'larpitalist'}</dd></div>
         </dl>
       </main>
       
@@ -151,7 +151,7 @@ function BybitCard({ values, positive, cardRef, media }) {
         </dl>
       </main>
       <img className="bybit-rocket" src="/bybit-rocket-reference.png" alt="" aria-hidden="true" />
-      <footer className="bybit-footer"><span>Join and claim over $5,000 in bonuses!</span><strong>Referral Code: {values.handle || 'anonlarper'}</strong><WebsiteQr className="bybit-qr" /></footer>
+      <footer className="bybit-footer"><span>Join and claim over $5,000 in bonuses!</span><strong>Referral Code: {values.handle || 'larpitalist'}</strong><WebsiteQr className="bybit-qr" /></footer>
       
     </div>
   )
@@ -177,7 +177,7 @@ function MexcCard({ values, positive, cardRef, media }) {
           <div><dt>Fair Price</dt><dd>{values.exit}</dd></div>
         </dl>
       </main>
-      <footer className="mexc-footer"><strong>Sign up to get first-trade loss coverage</strong><span>mexc.com · {values.handle || 'anonlarper'}</span></footer>
+      <footer className="mexc-footer"><strong>Sign up to get first-trade loss coverage</strong><span>mexc.com · {values.handle || 'larpitalist'}</span></footer>
       
     </div>
   )
@@ -300,7 +300,7 @@ function PhotonCard({ values, positive, cardRef, media }) {
 }
 
 function FomoCard({ values, positive, cardRef, media }) {
-  const username = String(values.handle || 'anonlarper').replace(/^@/, '')
+  const username = String(values.handle || 'larpitalist').replace(/^@/, '')
   const referral = String(values.inviteCode || username).replace(/^@/, '')
 
   return (
@@ -338,7 +338,7 @@ function FomoCard({ values, positive, cardRef, media }) {
 }
 
 function PumpfunCard({ values, positive, cardRef, media }) {
-  const username = String(values.handle || 'anonlarper').replace(/^@/, '')
+  const username = String(values.handle || 'larpitalist').replace(/^@/, '')
 
   return (
     <div ref={cardRef} className={cardClasses('native-share pumpfun-card', positive, media.backgroundImage)}>
@@ -387,7 +387,7 @@ function JupiterCard({ values, positive, cardRef, media }) {
 }
 
 function MoonshotCard({ values, positive, cardRef, media }) {
-  const username = String(values.handle || 'anonlarper').replace(/^@/, '')
+  const username = String(values.handle || 'larpitalist').replace(/^@/, '')
   return (
     <div ref={cardRef} className={cardClasses('native-share moonshot-card', positive, media.backgroundImage)}>
       <CustomBackground src={media.backgroundImage} />
@@ -416,7 +416,7 @@ function MoonshotCard({ values, positive, cardRef, media }) {
 }
 
 function TrojanCard({ values, positive, cardRef, media }) {
-  const referral = String(values.handle || 'anonlarper').replace(/^@/, '')
+  const referral = String(values.handle || 'larpitalist').replace(/^@/, '')
   return (
     <div ref={cardRef} className={cardClasses('native-share trojan-card', positive, media.backgroundImage)}>
       <CustomBackground src={media.backgroundImage} />
@@ -444,14 +444,14 @@ function TrojanCard({ values, positive, cardRef, media }) {
 }
 
 function PhantomWalletCard({ values, positive, cardRef, media }) {
-  const username = String(values.handle || 'anonlarper').replace(/^@/, '')
+  const username = String(values.handle || 'larpitalist').replace(/^@/, '')
   return (
     <div ref={cardRef} className={cardClasses('native-share phantom-wallet-card', positive, media.backgroundImage)}>
       <CustomBackground src={media.backgroundImage} />
       <img className="phantom-header-art" src="/phantom-header.png" alt="" aria-hidden="true" />
       <header className="phantom-profile">
         <img src={media.avatarImage || '/phantom-default-avatar.png'} alt="" />
-        <div><strong>@{username}</strong><span>{values.walletName || 'PNLARP Wallet'}</span></div>
+        <div><strong>@{username}</strong><span>{values.walletName || 'Larpitalism Wallet'}</span></div>
       </header>
       <main className="phantom-wallet-body">
         <div className="phantom-balance">${values.walletBalance}</div>
@@ -460,7 +460,7 @@ function PhantomWalletCard({ values, positive, cardRef, media }) {
         <nav className="phantom-tabs" aria-label="Wallet asset type"><strong>Tokens</strong><span>Collectibles</span><i>•••</i></nav>
         <article className="phantom-token-row">
           <span className="phantom-token-icon">{media.coinImage ? <img src={media.coinImage} alt="" /> : <b>L</b>}</span>
-          <div><strong>{values.pair || 'PNLARP'} <i>✓</i></strong><span>{values.tokenAmount} {values.tokenSymbol || 'PNLARP'}</span></div>
+          <div><strong>{values.pair || 'LARP'} <i>✓</i></strong><span>{values.tokenAmount} {values.tokenSymbol || 'LARP'}</span></div>
           <div><strong>${values.tokenValue}</strong><span>{signed(values.tokenPnl, '$')}</span></div>
         </article>
       </main>
