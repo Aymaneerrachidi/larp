@@ -4,7 +4,8 @@
 
 - First 3 successfully rendered cards are free, without wallet login.
 - Holding at least **1,000,000 LARP on Robinhood Chain** unlocks exports while eligible.
-- Holder checks read the latest chain state before each export. Robinhood's public RPC may prune older state behind the `safe` tag; holder checks do not require historical state. Payment verification separately requires chain finality.
+- Isolated deployments with `ACCESS_TEST_MODE=true` use **15,000 tokens** for holder testing. The backend publishes the configured minimum so the displayed requirement always matches the balance check. Normal mode retains the 1,000,000-token launch requirement.
+- Holder checks read the latest chain state before each export. Robinhood's public RPC may prune older state behind the `safe` tag; holder checks do not require historical state.
 - A **$10 pass**, paid in native **ETH** or the **LARP ERC-20 token**, unlocks exports for **24 hours after verification**. It does not renew automatically.
 - Download and Copy share one quota. Reusing the last rendered card in the same tab uses the cached image, not another credit. A render failure restores its reserved credit.
 - Wallet login is a short-lived, domain-bound sign-in message. Payments are direct transfers; no approval, permit, custody, or private key is requested.
@@ -13,9 +14,11 @@
 
 1. Run `npm install`.
 2. Copy `.env.example` to `.env.local`. Keep token, recipient and market addresses empty until they are known.
-3. Run `npm run dev`. `APP_ORIGIN` must exactly match the browser URL, including its port. Vite uses a development-only, in-memory backend by default. Restarting it clears local usage.
+3. Run `npm run dev`. `APP_ORIGIN` must exactly match the browser URL, including its port. Vite uses a development-only, in-memory backend by default. Restarting it clears local usage, sessions, invoices and passes. For payment testing across restarts, configure `DATABASE_URL` with an isolated `ACCESS_NAMESPACE` in `.env.local`.
 4. On macOS/Linux, set `CHROME_EXECUTABLE_PATH` to an installed Chrome/Chromium executable. Windows Chrome is detected automatically in the usual Program Files location.
 5. Run `npm test` and `npm run build`.
+6. With the local server running, `node tests/payment-ui.mjs` verifies automatic payment confirmation, reload/reconnect recovery, failed checks and wallet disconnects using mocked APIs/wallets. It sends no payments. Set `TEST_ORIGIN` for another local port and `CHROME_EXECUTABLE_PATH` if Chrome is not installed at the Windows default path.
+7. `node tests/holder-ui.mjs` checks the holder confirmation popup, the 15,000-token test threshold, loss of access after selling below the minimum, balance-check failures and disconnects. It uses mocked holdings and sends no transactions. Holder confirmations appear after an eligible wallet sign-in or an explicit holding check; normal page refreshes do not repeat them.
 
 The unconfigured UI displays the real membership terms but disables holding verification/payment. It never invents a token, recipient or exchange rate. Wallet login and the free trial can still be tested.
 
@@ -56,7 +59,7 @@ To also enable LARP payments:
 
 Quotes last 5 minutes and use integer arithmetic rounded up to the nearest smallest token unit. Users see the exact amount, recipient, source and deadline before payment. ETH gas is separate. Price services failing or returning stale HTTP responses disable quotes. DEX Screener is an indexed spot source, not a manipulation-resistant oracle: review the liquidity and trustworthiness of the approved market before enabling LARP payments. For an immature market, leave LARP payments disabled and use ETH.
 
-Payment verification checks chain, sender, nonce, exact destination/calldata/value, successful receipt, ERC-20 Transfer logs where applicable, inclusion before the quote deadline, and chain finality. Finality may take longer than the browser's initial polling window. Users can retry verification using the saved transaction hash without paying again. One transaction/invoice can only credit access once, even across simultaneous requests. Payment references are retained for 7 days. Transactions included after a quote expires or failed broadcasts with uncertain status need operator review; retain the transaction hash and do not ask the user to pay twice.
+Payment verification checks chain, sender, nonce, exact destination/calldata/value, successful receipt, ERC-20 Transfer logs where applicable, inclusion before the quote deadline, and matching transaction/receipt hashes in the current canonical block. Access opens on a successful Robinhood sequencer confirmation without waiting for Ethereum finality. This deliberately accepts the risk that a later chain reorganization could reverse a credited transfer; credited passes are not automatically revoked. The browser checks immediately after broadcast, retries pending payments automatically, and resumes a saved payment after reload/reconnecting the sending wallet. Temporary service failures back off and retry; invalid payments stop for review. Users can also retry verification using the saved transaction hash without paying again. One transaction/invoice can only credit access once, even across simultaneous requests. Payment references are retained for 7 days. Transactions included after a quote expires or failed broadcasts with uncertain status need operator review; retain the transaction hash and do not ask the user to pay twice.
 
 The backend does not receive wallet keys, send transactions, or collect automatic recurring payments. A wallet must explicitly approve each payment.
 
@@ -77,6 +80,7 @@ Automated tests cover signature expiry/replay, cookie tampering, atomic quotas, 
 Before accepting real payments, set `LARP_TREASURY_WALLET` and, once launched, `LARP_TOKEN_ADDRESS` in the Vercel production environment. Redeploy to activate them. Run `npm run preflight -- --payments` with complete production environment values locally: it checks durable storage, network identity, token decimals and live pricing. Sensitive values may need to be supplied locally because Vercel does not return them on env pull. A passing preflight does not prove payment settlement: perform a controlled real payment and verify the resulting pass before announcing paid access. Keep the previous Vercel deployment available for rollback.
 
 References:
+- https://docs.robinhood.com/chain/transaction-finality/
 - https://docs.robinhood.com/chain/connecting/
 - https://docs.robinhood.com/chain/add-network-to-wallet/
 - https://eips.ethereum.org/EIPS/eip-6963

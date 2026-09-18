@@ -102,6 +102,26 @@ test('decimal amounts retain precision and reject invalid/rounded amounts', () =
   assert.throws(() => toRawAmount('1e10', 18))
 })
 
+test('isolated holder testing accepts 15,000 tokens while normal access still requires 1 million', async () => {
+  const config = getConfig({ APP_ORIGIN: 'http://localhost:5173', ACCESS_TEST_MODE: 'true', ACCESS_NAMESPACE: 'test-holdings', LARP_TOKEN_ADDRESS: token })
+  const store = new MemoryStore(), service = new RobinhoodService(config), wallet = account().address.toLowerCase()
+  assert.equal(publicConfig(config).holdMinimum, '15000')
+  const minimum = 15000n * 10n ** 18n
+  let balance = 20000n * 10n ** 18n
+  service.client = { getChainId: async () => 4663, readContract: async ({ functionName }) => functionName === 'decimals' ? 18 : balance }
+  await store.set('usage:guest:holder-test', 3)
+  assert.equal((await reserveExport(store, service, config, 'holder-test', wallet)).keys, null)
+  balance = minimum
+  assert.equal((await getAccess(store, service, config, 'holder-test', wallet)).holder, true)
+  balance = minimum - 1n
+  await assert.rejects(reserveExport(store, service, config, 'holder-test', wallet), error => error.status === 402)
+  balance = 20000n * 10n ** 18n
+  const normal = new RobinhoodService(configured())
+  normal.client = service.client
+  assert.equal(normal.config.holdMinimum, '1000000')
+  assert.equal(await normal.holds(wallet), false)
+})
+
 test('$10 quotes round up without floating-point underpayments', () => {
   assert.equal(quoteRawAmount('10', '2500', 18), 4000000000000000n)
   assert.equal(quoteRawAmount('10', '0.00001', 18), 1000000000000000000000000n)
@@ -111,40 +131,42 @@ test('$10 quotes round up without floating-point underpayments', () => {
 })
 
 test('ETH payments check the exact value, recipient, network, nonce and quote expiry', () => {
-  const { quote, transaction, receipt } = paymentFixture()
+  const { quote, transaction, receipt, included } = paymentFixture()
   quote.currency = 'ETH'; quote.rawAmount = '4000000000000000'
   quote.expiresAt = 200000
   quote.transaction = { to: treasury, data: '0x', value: `0x${4000000000000000n.toString(16)}` }
   transaction.to = treasury; transaction.input = '0x'; transaction.value = 4000000000000000n
   receipt.logs = []
-  assert.doesNotThrow(() => validatePaymentTransaction(transaction, receipt, quote, 12n, 199n))
-  assert.throws(() => validatePaymentTransaction({ ...transaction, value: 1n }, receipt, quote, 12n, 199n))
-  assert.throws(() => validatePaymentTransaction(transaction, receipt, quote, 12n, 201n), /expired/)
+  assert.doesNotThrow(() => validatePaymentTransaction(transaction, receipt, quote, { ...included, timestamp: 199n }))
+  assert.throws(() => validatePaymentTransaction({ ...transaction, value: 1n }, receipt, quote, { ...included, timestamp: 199n }))
+  assert.throws(() => validatePaymentTransaction(transaction, receipt, quote, { ...included, timestamp: 201n }), /expired/)
 })
 
-test('receipt finality may arrive after quote expiry if payment was included on time', () => {
-  const { quote, transaction, receipt } = paymentFixture()
+test('verification after quote expiry succeeds if payment was included on time', () => {
+  const { quote, transaction, receipt, included } = paymentFixture()
   quote.expiresAt = 200000
-  assert.doesNotThrow(() => validatePaymentTransaction(transaction, receipt, quote, 500n, 199n))
+  assert.doesNotThrow(() => validatePaymentTransaction(transaction, receipt, quote, { ...included, timestamp: 199n }))
 })
 
 function paymentFixture() {
   const wallet = account().address.toLowerCase()
   const data = encodeFunctionData({ abi: erc20Abi, functionName: 'transfer', args: [treasury, 10n] })
   const quote = { chainId: 4663, wallet, tokenAddress: token, treasury, nonce: 4, fromBlock: '10', rawAmount: '10', currency: 'LARP', transaction: { data, to: token, value: '0x0' } }
-  const transaction = { chainId: 4663, from: wallet, to: token, input: data, value: 0n, nonce: 4 }
-  const receipt = { status: 'success', blockNumber: 12n, logs: [{ address: token, topics: encodeEventTopics({ abi: erc20Abi, eventName: 'Transfer', args: { from: wallet, to: treasury } }), data: encodeAbiParameters([{ type: 'uint256' }], [10n]) }] }
-  return { quote, transaction, receipt }
+  const included = { number: 12n, hash: '0x' + 'b'.repeat(64), timestamp: 199n }
+  const hash = '0x' + 'a'.repeat(64)
+  const transaction = { hash, blockHash: included.hash, blockNumber: included.number, chainId: 4663, from: wallet, to: token, input: data, value: 0n, nonce: 4 }
+  const receipt = { transactionHash: hash, blockHash: included.hash, status: 'success', blockNumber: 12n, logs: [{ address: token, topics: encodeEventTopics({ abi: erc20Abi, eventName: 'Transfer', args: { from: wallet, to: treasury } }), data: encodeAbiParameters([{ type: 'uint256' }], [10n]) }] }
+  return { quote, transaction, receipt, included, hash }
 }
 
 test('payment receipt validation rejects wrong chain, sender, amount, recipient, nonce, missing logs and failed tx', () => {
-  const { quote, transaction, receipt } = paymentFixture()
-  assert.doesNotThrow(() => validatePaymentTransaction(transaction, receipt, quote, 12n))
-  for (const patch of [{ chainId: 1 }, { from: treasury }, { to: treasury }, { input: '0x' }, { value: 1n }, { nonce: 3 }]) assert.throws(() => validatePaymentTransaction({ ...transaction, ...patch }, receipt, quote, 12n))
-  assert.throws(() => validatePaymentTransaction(transaction, { ...receipt, status: 'reverted' }, quote, 12n))
-  assert.throws(() => validatePaymentTransaction(transaction, { ...receipt, logs: [] }, quote, 12n))
-  assert.throws(() => validatePaymentTransaction(transaction, { ...receipt, blockNumber: 9n }, quote, 12n))
-  assert.throws(() => validatePaymentTransaction(transaction, receipt, quote, 11n), error => error.code === 'PAYMENT_PENDING')
+  const { quote, transaction, receipt, included } = paymentFixture()
+  assert.doesNotThrow(() => validatePaymentTransaction(transaction, receipt, quote, included))
+  for (const patch of [{ chainId: 1 }, { from: treasury }, { to: treasury }, { input: '0x' }, { value: 1n }, { nonce: 3 }]) assert.throws(() => validatePaymentTransaction({ ...transaction, ...patch }, receipt, quote, included))
+  assert.throws(() => validatePaymentTransaction(transaction, { ...receipt, status: 'reverted' }, quote, included))
+  assert.throws(() => validatePaymentTransaction(transaction, { ...receipt, logs: [] }, quote, included))
+  assert.throws(() => validatePaymentTransaction(transaction, { ...receipt, blockNumber: 9n }, quote, included))
+  for (const block of [{ ...included, hash: '0x' + 'c'.repeat(64) }, { ...included, number: null }, { ...included, number: 13n }]) assert.throws(() => validatePaymentTransaction(transaction, receipt, quote, block), error => error.code === 'PAYMENT_PENDING')
 })
 
 test('ERC-20 balance reads verify the RPC network and exact configured contract', async () => {
@@ -199,6 +221,34 @@ test('HTTP API: three exports, fourth denied, wallet proof, replay rejection and
   assert.equal((await request('export', payload)).status, 200)
   await request('logout', {})
   assert.equal((await request('export', payload)).status, 402)
+})
+
+test('successful ETH and LARP receipts unlock immediately without querying Ethereum finality', async () => {
+  for (const currency of ['ETH', 'LARP']) {
+    const { quote, transaction, receipt, included, hash } = paymentFixture()
+    if (currency === 'ETH') {
+      quote.currency = 'ETH'; quote.rawAmount = '10'
+      quote.transaction = { to: treasury, data: '0x', value: '0xa' }
+      Object.assign(transaction, { to: treasury, input: '0x', value: 10n })
+      receipt.logs = []
+    }
+    const service = new RobinhoodService(configured())
+    service.client = {
+      getChainId: async () => 4663,
+      getTransaction: async () => transaction,
+      getTransactionReceipt: async () => receipt,
+      getBlock: async options => { assert.deepEqual(options, { blockNumber: 12n }); return included },
+    }
+    assert.equal(await service.verifyPayment(quote, hash), true)
+    await assert.rejects(service.verifyPayment(quote, '0x' + 'f'.repeat(64)), /response could not be verified/)
+    service.client.getTransactionReceipt = async () => { const error = new Error(); error.name = 'TransactionReceiptNotFoundError'; throw error }
+    await assert.rejects(service.verifyPayment(quote, hash), error => error.code === 'PAYMENT_PENDING')
+    service.client.getTransactionReceipt = async () => receipt
+    service.client.getBlock = async () => ({ ...included, hash: '0x' + 'f'.repeat(64) })
+    await assert.rejects(service.verifyPayment(quote, hash), error => error.code === 'PAYMENT_PENDING')
+    service.client.getBlock = async () => { const error = new Error(); error.name = 'BlockNotFoundError'; throw error }
+    await assert.rejects(service.verifyPayment(quote, hash), error => error.code === 'PAYMENT_PENDING')
+  }
 })
 
 test('HTTP payments require login, preserve quoted 24-hour terms and credit repeated confirmations only once', async t => {

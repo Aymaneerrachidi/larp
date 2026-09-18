@@ -42,7 +42,7 @@ export class RobinhoodService {
     const [decimals, balance] = await Promise.all([
       this.decimals(),
       // Holder eligibility follows current holdings. Public Robinhood nodes can
-      // prune the state behind `safe`; payment settlement still requires finality.
+      // prune the state behind `safe`.
       this.client.readContract({ address: this.config.tokenAddress, abi: erc20Abi, functionName: 'balanceOf', args: [wallet], blockTag: 'latest' }),
     ])
     return balance >= toRawAmount(this.config.holdMinimum, decimals)
@@ -80,20 +80,31 @@ export class RobinhoodService {
     if (typeof hash !== 'string' || !/^0x[a-fA-F0-9]{64}$/.test(hash)) throw new HttpError(400, 'Invalid transaction hash.')
     if (quote.chainId !== this.config.network.chainId) throw new HttpError(400, 'This payment belongs to a different network.')
     await this.checkNetwork()
-    let transaction, receipt
+    let transaction, receipt, included
     try {
       ;[transaction, receipt] = await Promise.all([this.client.getTransaction({ hash }), this.client.getTransactionReceipt({ hash })])
+      if (receipt.blockNumber === null) throw new HttpError(409, 'Waiting for Robinhood to confirm your payment. Do not pay again.', 'PAYMENT_PENDING')
+      included = await this.client.getBlock({ blockNumber: receipt.blockNumber })
     } catch (error) {
-      if (error.name === 'TransactionNotFoundError' || error.name === 'TransactionReceiptNotFoundError') throw new HttpError(409, 'Payment is awaiting confirmation. Retry verification shortly.', 'PAYMENT_PENDING')
+      if (['TransactionNotFoundError', 'TransactionReceiptNotFoundError', 'BlockNotFoundError'].includes(error.name)) throw new HttpError(409, 'Waiting for Robinhood to confirm your payment. Do not pay again.', 'PAYMENT_PENDING')
       throw error
     }
-    const [finalized, included] = await Promise.all([this.client.getBlock({ blockTag: 'finalized' }), this.client.getBlock({ blockNumber: receipt.blockNumber })])
-    validatePaymentTransaction(transaction, receipt, quote, finalized.number, included.timestamp)
+    if (transaction.hash?.toLowerCase() !== hash.toLowerCase() || receipt.transactionHash?.toLowerCase() !== hash.toLowerCase()) throw new HttpError(503, 'The payment response could not be verified. Please retry; do not pay again.')
+    validatePaymentTransaction(transaction, receipt, quote, included)
     return true
   }
 }
 
-export function validatePaymentTransaction(transaction, receipt, quote, finalizedBlock, includedTimestamp) {
+export function validatePaymentTransaction(transaction, receipt, quote, included) {
+  // Grant this low-value pass on Robinhood's successful sequencer confirmation.
+  // Read the block by number to reject stale/orphaned receipts before crediting.
+  // Full Ethereum finality is deliberately not required (see ACCESS_SETUP.md).
+  if (!included?.hash || included.number === null || receipt.blockNumber !== included.number
+    || receipt.blockHash?.toLowerCase() !== included.hash.toLowerCase()
+    || transaction.blockHash?.toLowerCase() !== included.hash.toLowerCase()
+    || transaction.blockNumber !== included.number) {
+    throw new HttpError(409, 'Waiting for Robinhood to confirm your payment. Do not pay again.', 'PAYMENT_PENDING')
+  }
   if (receipt.status !== 'success') throw new HttpError(400, 'That transaction failed. No access was purchased.')
   if (transaction.chainId !== quote.chainId || transaction.from?.toLowerCase() !== quote.wallet.toLowerCase()
     || transaction.to?.toLowerCase() !== quote.transaction.to.toLowerCase() || transaction.input?.toLowerCase() !== quote.transaction.data.toLowerCase()
@@ -109,6 +120,5 @@ export function validatePaymentTransaction(transaction, receipt, quote, finalize
     } catch { return sum }
   }, 0n)
   if (transferred < BigInt(quote.rawAmount)) throw new HttpError(400, 'The required token payment was not received. Keep the transaction hash and contact support before paying again.')
-  if (quote.expiresAt && Number(includedTimestamp) * 1000 > quote.expiresAt) throw new HttpError(400, 'Payment was included after the quote expired. Keep the transaction hash and contact support; do not pay again.')
-  if (finalizedBlock === null || receipt.blockNumber > finalizedBlock) throw new HttpError(409, 'Payment is waiting for chain finality. Retry verification later; do not pay again.', 'PAYMENT_PENDING')
+  if (quote.expiresAt && Number(included.timestamp) * 1000 > quote.expiresAt) throw new HttpError(400, 'Payment was included after the quote expired. Keep the transaction hash and contact support; do not pay again.')
 }

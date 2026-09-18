@@ -23,7 +23,7 @@ export function getConfig(env = process.env) {
     origin, secret: env.SESSION_SECRET || 'local-development-only-never-deploy-this-secret',
     production: env.NODE_ENV === 'production', testMode,
     rpcUrl: env.ROBINHOOD_RPC_URL || network.rpcUrl, tokenAddress, symbol: 'LARP', network,
-    holdMinimum: '1000000', priceUsd: '10', paymentHours: 24,
+    holdMinimum: testMode ? '15000' : '1000000', priceUsd: '10', paymentHours: 24,
     treasury: env.LARP_TREASURY_WALLET?.toLowerCase() || '',
     pricePair: env.LARP_PRICE_PAIR_ADDRESS?.toLowerCase() || '',
     priceChain: env.LARP_PRICE_DEX_CHAIN || (network.chainId === 4663 ? 'robinhood' : ''),

@@ -19,6 +19,7 @@ import {
 } from '@phosphor-icons/react'
 import PnlCard from './PnlCard.jsx'
 import AccessPanel, { AccessSummary } from './AccessPanel.jsx'
+import AccessConfirmation from './AccessConfirmation.jsx'
 import { studioRequest, useStudioAccess } from './useStudioAccess.js'
 import { futuresPresets, memecoinPresets, platforms } from './platforms.js'
 
@@ -160,7 +161,7 @@ function App() {
     ...initialValues,
     ...(platforms.find((item) => item.id === platformId)?.defaults || {}),
   }))
-  const [theme, setTheme] = useState(() => localStorage.getItem('larpitalism-theme') || 'light')
+  const [theme, setTheme] = useState(() => localStorage.getItem('larpitalism-theme-rh') === 'light' ? 'light' : 'dark')
   const [exportState, setExportState] = useState('idle')
   const [message, setMessage] = useState('')
   const [media, setMedia] = useState({ coinImages: {}, avatarImages: {}, backgrounds: {} })
@@ -179,8 +180,8 @@ function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#22231f' : '#f6f4ed')
-    localStorage.setItem('larpitalism-theme', theme)
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#000000' : '#f5f7f0')
+    localStorage.setItem('larpitalism-theme-rh', theme)
   }, [theme])
 
   useGSAP(() => {
@@ -354,7 +355,7 @@ function App() {
       <div className="scroll-progress" aria-hidden="true" />
       <nav className="site-nav" aria-label="Primary navigation">
         <a className="wordmark" href="#top" aria-label="LARPITALISM home">
-          <img src="/brand/larpitalism-mark-small.png" width="128" height="128" alt="" />
+          <img src="/brand/larpitalism-mark-neon-small.png" width="128" height="128" alt="" />
           <span>LARPITALISM</span>
         </a>
         <div className="nav-links">
@@ -382,7 +383,7 @@ function App() {
           <div className="brand-hero-media hero-reveal" aria-label="Example simulated trading card">
             <div className="hero-art-label"><span>THE LARPITALIST</span><span>NO. 001 / &infin;</span></div>
             <div className="sample-card">
-              <div className="sample-top"><span className="sample-brand"><img src="/brand/larpitalism-mark-small.png" width="128" height="128" alt="" />LARPITALISM</span><span>SIMULATED</span></div>
+              <div className="sample-top"><span className="sample-brand"><img src="/brand/larpitalism-mark-neon-small.png" width="128" height="128" alt="" />LARPITALISM</span><span>SIMULATED</span></div>
               <div className="sample-pair">BTC / USDT <span>LONG &middot; 20&times;</span></div>
               <span className="sample-label">Return on imagination</span>
               <strong className="sample-return">+1,284<span>.69%</span></strong>
@@ -404,7 +405,7 @@ function App() {
         <section className="manifesto-section" ref={manifestoRef} aria-label="LARPITALISM statement">
           <p>
             {manifestoStart.map((word) => <span className="manifesto-word" key={word}>{word} </span>)}
-            <span className="manifesto-inline-image"><img src="/brand/larpitalism-mark-small.png" width="128" height="128" alt="" /></span>{' '}
+            <span className="manifesto-inline-image"><img src="/brand/larpitalism-mark-neon-small.png" width="128" height="128" alt="" /></span>{' '}
             {manifestoEnd.map((word) => <span className="manifesto-word" key={word}>{word} </span>)}
           </p>
         </section>
@@ -538,7 +539,7 @@ function App() {
               <p>Move from Binance futures to Moonshot memecoins without relearning the editor.</p>
             </article>
             <article className="bento-logo">
-              <img src="/brand/larpitalism-mark.png" width="512" height="512" alt="LARPITALISM monogram" />
+              <img src="/brand/larpitalism-mark-neon.png" width="512" height="512" alt="LARPITALISM monogram" />
             </article>
             <article className="bento-uploads">
               <ImageSquare size={30} />
@@ -612,13 +613,14 @@ One good-looking post.</h2>
             <p>Your next card is a few clicks away. Create right in your browser, on desktop or mobile.</p>
             <a className="button button-primary" href="#generator">Let&#8217;s make something <ArrowRight size={18} /></a>
           </div>
-          <img className="app-logo" src="/brand/larpitalism-mark.png" width="160" height="160" alt="Larpitalism monogram" />
+          <img className="app-logo" src="/brand/larpitalism-mark-neon.png" width="160" height="160" alt="Larpitalism monogram" />
         </section>
       </main>
 
       <AccessPanel studio={studio} />
+      <AccessConfirmation studio={studio} />
       <footer className="site-footer">
-        <a className="footer-brand" href="#top"><img src="/brand/larpitalism-mark-small.png" width="128" height="128" alt="" /><span>LARPITALISM</span></a>
+        <a className="footer-brand" href="#top"><img src="/brand/larpitalism-mark-neon-small.png" width="128" height="128" alt="" /><span>LARPITALISM</span></a>
         <p>Simulated PNL cards for entertainment and parody.</p>
         <div className="footer-links">
           <a href="#generator">The studio</a>

@@ -18,8 +18,9 @@ export function AccessSummary({ studio }) {
 export default function AccessPanel({ studio }) {
   const dialog = useRef(null)
   const [wallets, setWallets] = useState([])
-  const { access, error, busy, open, pending, quote } = studio
+  const { access, error, busy, paymentStatus, open, pending, quote } = studio
   const config = access?.config
+  const holdingAmount = BigInt(config?.holdMinimum || '1000000').toLocaleString('en-US')
   useEffect(() => {
     if (open && !dialog.current.open) { dialog.current.showModal(); setWallets(availableWallets()) }
     if (!open && dialog.current.open) dialog.current.close()
@@ -32,12 +33,12 @@ export default function AccessPanel({ studio }) {
   const disabled = Boolean(busy)
   return <dialog ref={dialog} className="access-dialog" aria-labelledby="access-title" onCancel={() => studio.setOpen(false)} onClose={() => studio.setOpen(false)}>
     <button className="access-close icon-button" type="button" aria-label="Close access options" onClick={() => studio.setOpen(false)}><X size={18} /></button>
-    <img className="access-logo" src="/brand/larpitalism-mark-small.png" alt="" width="48" height="48" />
+    <img className="access-logo" src="/brand/larpitalism-mark-neon-small.png" alt="" width="48" height="48" />
     <p className="eyebrow">THE LARPITALIST MEMBERSHIP</p>
     <p className="access-network">{config?.network.name || 'Robinhood Chain'}{config?.network.testnet ? ' ? test tokens only' : ''}</p>
     {config?.testMode && <p className="access-test-notice"><strong>Test token, real network.</strong> This site checks the substitute contract shown below. Payments use real assets and grant access on this test site only.</p>}
     <h2 id="access-title">Keep the cards coming.</h2>
-    <p className="access-intro">Your first 3 exports are free. Hold 1 million LARP for unlimited access, or pay $10 in ETH or LARP for a 24-hour pass.</p>
+    <p className="access-intro">Your first 3 exports are free. Hold {holdingAmount} LARP for unlimited access, or pay $10 in ETH or LARP for a 24-hour pass.</p>
     <div className="access-progress" aria-label={`${access?.freeRemaining ?? 3} free exports remaining`}>
       {[0, 1, 2].map(index => <span key={index} className={access && index < 3 - access.freeRemaining ? 'used' : ''} />)}
       <small>{access ? `${access.freeRemaining} free exports left` : 'Checking access…'}</small>
@@ -54,12 +55,12 @@ export default function AccessPanel({ studio }) {
       </>}
     </section>
     <div className="access-options">
-      <section><p className="eyebrow">01 / HOLD</p><h3>1,000,000 LARP</h3><p>Unlimited exports while you hold at least 1 million LARP. Your tokens stay in your wallet.{!config?.holdEnabled && ' Holder verification opens when the token launches.'}</p><button className="button button-secondary" type="button" disabled={disabled || !access?.wallet || !config?.holdEnabled} onClick={studio.checkHoldings}>{config?.holdEnabled ? 'Check my holdings' : 'Available soon'}</button></section>
-      <section><p className="eyebrow">02 / PAY</p><h3>$10 / 24 hours</h3><p>Unlimited exports for 24 hours after payment verification. Pay in ETH or LARP at a live quoted rate. No automatic renewal. Network fees are extra.</p><div className="payment-methods">{['ETH', 'LARP'].map(currency => <button key={currency} className="button button-secondary" type="button" disabled={disabled || !access?.wallet || !config?.paymentMethods[currency] || Boolean(pending) || access?.unlocked} onClick={() => studio.requestQuote(currency)}>Quote in {currency}</button>)}</div>{!config?.payEnabled && <small className="access-coming-soon">Payments open when the receiving wallet is announced.</small>}</section>
+      <section><p className="eyebrow">01 / HOLD</p><h3>{holdingAmount} LARP</h3><p>Unlimited exports while you hold at least {holdingAmount} LARP. Your tokens stay in your wallet.{!config?.holdEnabled && ' Holder verification opens when the token launches.'}</p><button className="button button-secondary" type="button" disabled={disabled || !access?.wallet || !config?.holdEnabled} onClick={studio.checkHoldings}>{config?.holdEnabled ? 'Check my holdings' : 'Available soon'}</button></section>
+      <section><p className="eyebrow">02 / PAY</p><h3>$10 / 24 hours</h3><p>Your 24-hour pass opens automatically once your transfer succeeds on Robinhood Chain. Pay in ETH or LARP at a live quoted rate. No automatic renewal. Network fees are extra.</p><div className="payment-methods">{['ETH', 'LARP'].map(currency => <button key={currency} className="button button-secondary" type="button" disabled={disabled || !access?.wallet || !config?.paymentMethods[currency] || Boolean(pending) || access?.unlocked} onClick={() => studio.requestQuote(currency)}>Quote in {currency}</button>)}</div>{!config?.payEnabled && <small className="access-coming-soon">Payments open when the receiving wallet is announced.</small>}</section>
     </div>
     {quote && !pending && <section className="payment-quote"><p className="eyebrow">REVIEW YOUR PAYMENT</p><h3>{quote.amount} {quote.currency}</h3><p>$10 for 24 hours of unlimited exports, plus the network fee shown by your wallet. Direct transfer only; no spending approval.</p><p>Quote expires at {new Date(quote.expiresAt).toLocaleTimeString()}. Confirm promptly; if the quote expires before you approve in your wallet, reject the request and get a new quote.</p><p className="quote-source">Rate: ${quote.unitPriceUsd} / {quote.currency} · {quote.priceSource}</p><code>{quote.treasury}</code><button className="button button-primary" type="button" disabled={disabled} onClick={studio.pay}>Pay {quote.amount} {quote.currency}</button></section>}
     {(config?.tokenAddress || config?.payEnabled) && <details className="payment-details"><summary>Verify token and payment details</summary><p>Network: {config.network.name}</p>{config.tokenAddress && <p>Token contract <code>{config.tokenAddress}</code></p>}{config.payEnabled && <p>Payment recipient <code>{config.treasury}</code></p>}</details>}
-    {pending && <section className="pending-payment"><h3>Finish verifying your payment</h3><p>Keep this reference. Do not pay again while a transfer is pending.</p><code>{pending.id}</code>{pending.wallet !== access?.wallet && <p>Reconnect {short(pending.wallet)} to verify.</p>}<label>Transaction hash<input value={pending.signature || ''} onChange={event => studio.setPending({ ...pending, signature: event.target.value.trim() })} maxLength={66} placeholder="Paste from wallet activity if missing" /></label><button className="button button-secondary" type="button" disabled={disabled || !pending.signature || pending.wallet !== access?.wallet} onClick={studio.confirmPayment}>Verify payment</button></section>}
+    {pending && <section className="pending-payment"><h3>Finish verifying your payment</h3><p>Keep this reference. Do not pay again while a transfer is pending.</p><code>{pending.id}</code>{pending.wallet !== access?.wallet && <p>Reconnect {short(pending.wallet)} to verify.</p>}<label>Transaction hash<input value={pending.signature || ''} onChange={event => studio.setPending({ ...pending, signature: event.target.value.trim() })} maxLength={66} placeholder="Paste from wallet activity if missing" /></label><button className="button button-secondary" type="button" disabled={disabled || !/^0x[a-fA-F0-9]{64}$/.test(pending.signature || '') || pending.wallet !== access?.wallet} onClick={studio.confirmPayment}>Verify payment</button>{paymentStatus && <p role="status" aria-live="polite">{paymentStatus}</p>}</section>}
     {access?.holdingError && <p className="access-error">Holdings could not be checked. Retry before making a payment.</p>}
     <p className={error ? 'access-error' : 'access-status'} role="status" aria-live="polite">{busy || error || ''}</p>
     {!access && error && <button className="button button-secondary" type="button" onClick={studio.checkHoldings} disabled={disabled}>Retry access check</button>}

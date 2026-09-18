@@ -1,11 +1,11 @@
 .access-summary { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 20px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 12px; }
 .access-summary > span { display: inline-flex; align-items: center; gap: 8px; }
 .access-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-.access-dot.is-unlocked { background: #738345; }
+.access-dot.is-unlocked { background: var(--accent); }
 .access-summary button { display: inline-flex; align-items: center; gap: 8px; padding: 4px 0; color: var(--accent); background: transparent; border: 0; cursor: pointer; font-size: 12px; }
 .access-test-notice { padding: 12px 14px; margin: 16px 0; background: var(--surface-2); border-left: 3px solid var(--accent); font-size: 12px; line-height: 1.6; }
-.access-dialog { position: fixed; width: min(660px, calc(100% - 32px)); max-height: calc(100dvh - 40px); padding: 32px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--surface); box-shadow: 0 24px 90px #16191040; }
-.access-dialog::backdrop { background: #171a16aa; backdrop-filter: blur(5px); }
+.access-dialog { position: fixed; width: min(660px, calc(100% - 32px)); max-height: calc(100dvh - 40px); padding: 32px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--surface); box-shadow: 0 24px 90px #00000080; }
+.access-dialog::backdrop { background: #000000b8; backdrop-filter: blur(5px); }
 .access-close { position: absolute; top: 18px; right: 18px; }
 .access-logo { object-fit: contain; margin-bottom: 8px; }
 .access-dialog h2 { margin: 10px 0 14px; font-size: clamp(28px, 5vw, 40px); line-height: 1.1; font-weight: 500; letter-spacing: -.055em; }
@@ -40,7 +40,7 @@
 .pending-payment { padding: 16px; background: var(--surface-2); margin-top: 20px; border-radius: 4px; }
 .pending-payment p { font-size: 12px; line-height: 1.5; }
 .pending-payment label { display: grid; gap: 7px; margin-top: 14px; font-size: 12px; }
-.pending-payment input { width: 100%; min-width: 0; padding: 10px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 3px; }
+.pending-payment input { width: 100%; min-width: 0; padding: 10px; background: var(--surface); color: var(--ink); border: 1px solid var(--control-line); border-radius: 3px; }
 .pending-payment .button { margin-top: 12px; }
 .export-render-page { min-width: 0; min-height: 0; background: transparent; }
 .export-render-page #root { width: 760px; padding: 0; }
@@ -56,3 +56,19 @@
 .payment-quote code { display: block; font-size: 11px; overflow-wrap: anywhere; }
 .payment-quote .button { margin-top: 14px; white-space: normal; overflow-wrap: anywhere; max-width: 100%; }
 .quote-source { color: var(--muted); }
+
+.payment-confirmation-dialog { width: min(480px, calc(100% - 32px)); padding: 32px; }
+.payment-confirmation-logo { display: block; object-fit: contain; }
+.payment-confirmation-icon { display: grid; place-items: center; width: 64px; height: 64px; margin: 28px 0 22px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+.payment-confirmation-dialog h2 { font-size: clamp(28px, 6vw, 36px); margin: 10px 0 14px; }
+.payment-confirmation-description { margin: 0; font-size: 15px; line-height: 1.6; color: var(--muted); }
+.payment-confirmation-details { margin: 26px 0; border-block: 1px solid var(--line); }
+.payment-confirmation-details > div { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px 16px; padding: 14px 0; }
+.payment-confirmation-details > div + div { border-top: 1px solid var(--line); }
+.payment-confirmation-details dt { font-size: 12px; color: var(--muted); }
+.payment-confirmation-details dd { margin: 0; font-size: 13px; font-weight: 500; line-height: 1.5; }
+.payment-confirmation-details code { font-size: 12px; font-weight: 400; }
+.payment-confirmation-continue { width: 100%; min-height: 48px; justify-content: center; }
+.payment-confirmation-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 18px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.payment-confirmation-footer a { display: inline-flex; align-items: center; gap: 4px; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 520px) { .payment-confirmation-dialog { padding: 24px; } }

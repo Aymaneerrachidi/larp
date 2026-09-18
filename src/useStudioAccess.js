@@ -5,11 +5,13 @@ export async function studioRequest(action, body) {
     method: body === undefined ? 'GET' : 'POST', credentials: 'same-origin',
     headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
     body: body === undefined ? undefined : JSON.stringify(body),
+    signal: action === 'confirm' ? AbortSignal.timeout(30000) : undefined,
   })
   if (!response.ok) {
     const data = await response.json().catch(() => ({}))
     const error = new Error(data.error || 'Studio access is unavailable. Please try again later.')
     error.code = data.code
+    error.status = response.status
     throw error
   }
   return action === 'export' ? response.blob() : response.json()
@@ -62,14 +64,33 @@ export function useStudioAccess() {
   const [open, setOpen] = useState(false)
   const [pending, setPendingState] = useState(savedPayment)
   const [quote, setQuote] = useState(null)
-  const provider = useRef(null)
+  const [verifying, setVerifying] = useState(false)
+  const [paymentStatus, setPaymentStatus] = useState('')
+  const [accessConfirmation, setAccessConfirmation] = useState(null)
+  const [confirmationAttempt, setConfirmationAttempt] = useState(0)
+  const [walletProvider, setWalletProvider] = useState(null)
+  const walletRevision = useRef(0)
   const operation = useRef(false)
   const setPending = useCallback(value => { persistPayment(value); setPendingState(value) }, [])
   const refresh = useCallback(async () => {
-    try { const result = await studioRequest('status'); setAccess(result); setError(''); return result }
-    catch (err) { setError(err.message); throw err }
+    const revision = walletRevision.current
+    try {
+      const result = await studioRequest('status')
+      if (revision !== walletRevision.current) return null
+      setAccess(result); setError(''); return result
+    } catch (err) { if (revision === walletRevision.current) setError(err.message); throw err }
   }, [])
   useEffect(() => { refresh().catch(() => {}) }, [refresh])
+  useEffect(() => {
+    if (accessConfirmation && (accessConfirmation.wallet !== access?.wallet || (accessConfirmation.kind === 'holder' && !access?.holder))) setAccessConfirmation(null)
+  }, [accessConfirmation, access?.wallet, access?.holder])
+
+  const confirmHolder = result => {
+    if (result?.wallet && result.holder && result.unlocked && !result.holdingError) {
+      setAccessConfirmation({ kind: 'holder', wallet: result.wallet })
+      setOpen(false)
+    }
+  }
 
   const run = async (name, action) => {
     if (operation.current) return
@@ -90,22 +111,27 @@ export function useStudioAccess() {
     const [currentAddress] = await selected.request({ method: 'eth_accounts' })
     if (currentAddress?.toLowerCase() !== address) throw new Error('Wallet account changed. Connect again.')
     const verified = await studioRequest('verify', { signature })
-    provider.current = selected
+    walletRevision.current++
+    setWalletProvider(selected)
     setAccess(verified); setQuote(null)
+    confirmHolder(verified)
+    setConfirmationAttempt(value => value + 1)
   })
 
   const disconnect = () => run('Disconnecting', async () => {
+    walletRevision.current++
     setAccess(await studioRequest('logout', {}))
     setQuote(null)
-    provider.current = null
+    setWalletProvider(null)
   })
 
   useEffect(() => {
-    const selected = provider.current
+    const selected = walletProvider
     if (!selected?.on || !access?.wallet) return
     const changed = (accounts) => {
       if (!accounts?.[0] || accounts[0].toLowerCase() !== access.wallet) {
-        provider.current = null
+        walletRevision.current++
+        setWalletProvider(null)
         studioRequest('logout', {}).then(setAccess).catch(err => { setAccess(null); setError(err.message) })
       }
     }
@@ -115,15 +141,48 @@ export function useStudioAccess() {
     selected.on('chainChanged', chainChanged)
     selected.on('disconnect', disconnected)
     return () => { selected.removeListener?.('accountsChanged', changed); selected.removeListener?.('chainChanged', chainChanged); selected.removeListener?.('disconnect', disconnected) }
-  }, [access?.wallet])
+  }, [access?.wallet, access?.config.network.chainId, walletProvider])
 
-  const confirm = async (payment) => {
-    if (!payment?.signature) throw new Error('Paste the transaction hash from your wallet to verify this payment.')
-    if (payment.wallet !== access?.wallet) throw new Error('Connect the wallet used for this payment first.')
-    const result = await studioRequest('confirm', { id: payment.id, signature: payment.signature })
-    setAccess(result); setPending(null)
-    return result
-  }
+  useEffect(() => {
+    setPaymentStatus('')
+    setVerifying(false)
+    if (!pending || !/^0x[a-fA-F0-9]{64}$/.test(pending.signature) || pending.wallet !== access?.wallet) return
+    let cancelled = false, timer, attempts = 0
+    const check = async () => {
+      if (cancelled) return
+      if (operation.current) { timer = setTimeout(check, 2500); return }
+      operation.current = true
+      setVerifying(true)
+      setError('')
+      setPaymentStatus('Checking your payment automatically. Do not pay again.')
+      const revision = walletRevision.current
+      try {
+        const result = await studioRequest('confirm', { id: pending.id, signature: pending.signature })
+        if (!cancelled && revision === walletRevision.current) {
+          setAccess(result); setPending(null); setPaymentStatus('')
+          if (result.wallet === pending.wallet && result.unlocked && Number(result.paidUntil) > Date.now()) {
+            setAccessConfirmation({ kind: 'payment', wallet: result.wallet, paidUntil: Number(result.paidUntil), hash: pending.signature })
+            setOpen(false)
+          }
+        }
+      } catch (err) {
+        if (cancelled) return
+        const retry = err.code === 'PAYMENT_PENDING' || err.status === 429 || err.status >= 500 || err instanceof TypeError || err.name === 'TimeoutError'
+        if (retry) {
+          setPaymentStatus(err.code === 'PAYMENT_PENDING'
+            ? 'Waiting for Robinhood to confirm your transfer. We will keep checking; do not pay again.'
+            : 'The payment check is temporarily unavailable. We will retry automatically; do not pay again.')
+          attempts++
+          timer = setTimeout(check, err.status === 429 ? 60000 : attempts < 12 ? 2500 : 10000)
+        } else { setPaymentStatus(''); setError(err.message) }
+      } finally {
+        operation.current = false
+        if (!cancelled) setVerifying(false)
+      }
+    }
+    check()
+    return () => { cancelled = true; clearTimeout(timer) }
+  }, [pending?.id, pending?.signature, pending?.wallet, access?.wallet, confirmationAttempt, setPending])
 
   const requestQuote = (currency) => run(`Getting ${currency} quote`, async () => {
     if (pending) throw new Error('Verify your existing payment before making another one.')
@@ -138,7 +197,7 @@ export function useStudioAccess() {
     if (pending) throw new Error('Verify your existing payment before making another one.')
     if (!quote || quote.wallet !== access?.wallet) throw new Error('Request a quote for this wallet first.')
     if (Date.now() >= quote.expiresAt - 30000) { setQuote(null); throw new Error('Quote expired or nearly expired. Request a fresh quote before paying.') }
-    const selected = provider.current
+    const selected = walletProvider
     if (!selected) throw new Error('Connect the same wallet again before paying.')
     const [account] = await selected.request({ method: 'eth_accounts' })
     if (account?.toLowerCase() !== access.wallet) throw new Error('Connect the verified wallet again before paying.')
@@ -159,18 +218,18 @@ export function useStudioAccess() {
     payment.signature = result
     setPending({ ...payment })
     setQuote(null)
-    setBusy('Waiting for final confirmation')
-    for (let attempt = 0; attempt < 8; attempt++) {
-      try { await confirm(payment); return } catch (err) {
-        if (err.code !== 'PAYMENT_PENDING') throw err
-        if (attempt === 7) throw new Error('Your payment is still confirming. Use Verify payment; do not send another transfer.')
-        await new Promise(resolve => setTimeout(resolve, 2500))
-      }
-    }
   })
 
-  return { access, error, busy, open, setOpen, pending, setPending, quote, requestQuote, refresh, connect, disconnect, pay,
-    checkHoldings: () => run('Checking holdings', refresh),
-    confirmPayment: () => run('Verifying payment', () => confirm(pending)),
+  return { access, error, busy: busy || (verifying ? 'Verifying payment' : ''), paymentStatus, accessConfirmation, dismissAccessConfirmation: () => setAccessConfirmation(null), open, setOpen, pending, setPending, quote, requestQuote, refresh, connect, disconnect, pay,
+    checkHoldings: () => run('Checking holdings', async () => {
+      const result = await refresh()
+      if (!result) return
+      confirmHolder(result)
+      if (result.wallet && result.config.holdEnabled && !result.holder && !result.unlocked && !result.holdingError) {
+        setError(`Holder access requires at least ${BigInt(result.config.holdMinimum).toLocaleString('en-US')} ${result.config.symbol} in this wallet.`)
+      }
+      return result
+    }),
+    confirmPayment: () => setConfirmationAttempt(value => value + 1),
   }
 }
