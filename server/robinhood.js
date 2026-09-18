@@ -41,7 +41,9 @@ export class RobinhoodService {
     await this.checkNetwork()
     const [decimals, balance] = await Promise.all([
       this.decimals(),
-      this.client.readContract({ address: this.config.tokenAddress, abi: erc20Abi, functionName: 'balanceOf', args: [wallet], blockTag: 'safe' }),
+      // Holder eligibility follows current holdings. Public Robinhood nodes can
+      // prune the state behind `safe`; payment settlement still requires finality.
+      this.client.readContract({ address: this.config.tokenAddress, abi: erc20Abi, functionName: 'balanceOf', args: [wallet], blockTag: 'latest' }),
     ])
     return balance >= toRawAmount(this.config.holdMinimum, decimals)
   }

@@ -28,6 +28,9 @@ test('Robinhood defaults and missing token configuration fail closed', () => {
   assert.equal(getConfig({ APP_ORIGIN: 'http://localhost:5173', ROBINHOOD_CHAIN_ID: '46630' }).network.testnet, true)
   assert.throws(() => getConfig({ APP_ORIGIN: 'http://localhost:5173', ROBINHOOD_CHAIN_ID: '1' }))
   assert.throws(() => getConfig({ NODE_ENV: 'production', APP_ORIGIN: 'https://example.com' }))
+  assert.throws(() => getConfig({ APP_ORIGIN: 'http://localhost:5173', ACCESS_TEST_MODE: 'true' }))
+  assert.throws(() => getConfig({ APP_ORIGIN: 'http://localhost:5173', ACCESS_TEST_MODE: 'true', ACCESS_NAMESPACE: 'production' }))
+  assert.equal(publicConfig(getConfig({ APP_ORIGIN: 'http://localhost:5173', ACCESS_TEST_MODE: 'true', ACCESS_NAMESPACE: 'test-token' })).testMode, true)
 })
 
 test('sign-in is domain/chain bound, expires, and rejects another wallet signature', async () => {
@@ -147,7 +150,7 @@ test('payment receipt validation rejects wrong chain, sender, amount, recipient,
 test('ERC-20 balance reads verify the RPC network and exact configured contract', async () => {
   const config = configured(), service = new RobinhoodService(config)
   let chainId = 4663, balance = 1000000n
-  service.client = { getChainId: async () => chainId, readContract: async options => { assert.equal(options.address, token); return options.functionName === 'decimals' ? 0 : balance } }
+  service.client = { getChainId: async () => chainId, readContract: async options => { assert.equal(options.address, token); if (options.functionName === 'balanceOf') assert.equal(options.blockTag, 'latest'); return options.functionName === 'decimals' ? 0 : balance } }
   assert.equal(await service.holds(account().address), true)
   balance = 999999n
   assert.equal(await service.holds(account().address), false)

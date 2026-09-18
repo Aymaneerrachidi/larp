@@ -16,10 +16,12 @@ export function getConfig(env = process.env) {
     throw new HttpError(503, 'Studio access is not configured yet.')
   }
   const tokenAddress = env.LARP_TOKEN_ADDRESS?.toLowerCase() || ''
+  const testMode = env.ACCESS_TEST_MODE === 'true'
+  if (testMode && (!env.ACCESS_NAMESPACE || env.ACCESS_NAMESPACE === 'production')) throw new HttpError(503, 'Test access requires isolated storage.')
   const network = robinhoodNetwork(Number(env.ROBINHOOD_CHAIN_ID || 4663))
   return {
     origin, secret: env.SESSION_SECRET || 'local-development-only-never-deploy-this-secret',
-    production: env.NODE_ENV === 'production',
+    production: env.NODE_ENV === 'production', testMode,
     rpcUrl: env.ROBINHOOD_RPC_URL || network.rpcUrl, tokenAddress, symbol: 'LARP', network,
     holdMinimum: '1000000', priceUsd: '10', paymentHours: 24,
     treasury: env.LARP_TREASURY_WALLET?.toLowerCase() || '',
@@ -35,7 +37,7 @@ export function publicConfig(config) {
   const tokenReady = isAddress(config.tokenAddress) && config.tokenAddress !== zeroAddress
   const recipientReady = isAddress(config.treasury) && config.treasury !== zeroAddress
   return {
-    symbol: config.symbol, tokenAddress: config.tokenAddress, network: config.network, freeLimit: config.freeLimit,
+    symbol: config.symbol, tokenAddress: config.tokenAddress, network: config.network, freeLimit: config.freeLimit, testMode: config.testMode,
     holdMinimum: config.holdMinimum, priceUsd: config.priceUsd,
     paymentHours: config.paymentHours, treasury: config.treasury,
     holdEnabled: Boolean(config.rpcUrl && tokenReady && config.holdMinimum),

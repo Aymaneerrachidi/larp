@@ -4,6 +4,7 @@
 
 - First 3 successfully rendered cards are free, without wallet login.
 - Holding at least **1,000,000 LARP on Robinhood Chain** unlocks exports while eligible.
+- Holder checks read the latest chain state before each export. Robinhood's public RPC may prune older state behind the `safe` tag; holder checks do not require historical state. Payment verification separately requires chain finality.
 - A **$10 pass**, paid in native **ETH** or the **LARP ERC-20 token**, unlocks exports for **24 hours after verification**. It does not renew automatically.
 - Download and Copy share one quota. Reusing the last rendered card in the same tab uses the cached image, not another credit. A render failure restores its reserved credit.
 - Wallet login is a short-lived, domain-bound sign-in message. Payments are direct transfers; no approval, permit, custody, or private key is requested.
@@ -30,6 +31,7 @@ Required server environment:
 - `DATABASE_URL_UNPOOLED`: direct connection for migrations. Pull environment values to the ignored `.env.production.local`, then run `npm run db:setup` once or after schema changes. Runtime requests never create tables.
 - `CRON_SECRET`: random secret for the daily maintenance job. It removes expired sessions, rate limits and quotes, while retaining usage and payment deduplication records.
 - `ACCESS_NAMESPACE`: defaults to `production`. Use a separate database or namespace for staging. Do not copy production access data into public previews.
+- `ACCESS_TEST_MODE=true`: adds a visible test-site notice and requires an explicit non-production namespace. Use a separate session secret and origin. Test passes, usage and wallet sessions are stored under the test namespace; maintenance only prunes its own namespace. The isolated `larpitalism-test` Vercel project uses this mode. A test site on chain 4663 still sends real mainnet transactions if the user approves payment.
 - Alternatively, `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` can run the same access service on Redis. `DATABASE_URL` takes precedence.
 - `ROBINHOOD_CHAIN_ID`: `4663` mainnet or `46630` testnet. Only these two networks are accepted; the UI labels testnet explicitly.
 - `ROBINHOOD_RPC_URL`: a dedicated RPC for the selected network. The public Robinhood RPC is the development fallback and may be rate-limited.

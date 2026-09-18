@@ -9,10 +9,10 @@ export function AccessSummary({ studio }) {
   const label = !access ? (error ? 'Access check unavailable' : 'Checking free exports…')
     : access.unlocked ? (access.holder ? 'Holder access active' : `Access until ${new Date(access.paidUntil).toLocaleDateString()}`)
       : `${access.freeRemaining} of 3 free exports left`
-  return <div className="access-summary">
+  return <>{access?.config.testMode && <p className="access-test-notice"><strong>Test site</strong> — using a substitute token. Wallet transactions on Robinhood mainnet use real assets.</p>}<div className="access-summary">
     <span><span className={`access-dot ${access?.unlocked ? 'is-unlocked' : ''}`} />{label}</span>
     <button type="button" onClick={() => studio.setOpen(true)} disabled={Boolean(busy)}>{access?.wallet ? short(access.wallet) : 'Hold or pay with LARP'} <ArrowRight size={14} /></button>
-  </div>
+  </div></>
 }
 
 export default function AccessPanel({ studio }) {
@@ -35,6 +35,7 @@ export default function AccessPanel({ studio }) {
     <img className="access-logo" src="/brand/larpitalism-mark-small.png" alt="" width="48" height="48" />
     <p className="eyebrow">THE LARPITALIST MEMBERSHIP</p>
     <p className="access-network">{config?.network.name || 'Robinhood Chain'}{config?.network.testnet ? ' ? test tokens only' : ''}</p>
+    {config?.testMode && <p className="access-test-notice"><strong>Test token, real network.</strong> This site checks the substitute contract shown below. Payments use real assets and grant access on this test site only.</p>}
     <h2 id="access-title">Keep the cards coming.</h2>
     <p className="access-intro">Your first 3 exports are free. Hold 1 million LARP for unlimited access, or pay $10 in ETH or LARP for a 24-hour pass.</p>
     <div className="access-progress" aria-label={`${access?.freeRemaining ?? 3} free exports remaining`}>

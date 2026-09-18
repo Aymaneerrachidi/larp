@@ -72,7 +72,7 @@ export class PostgresStore {
   set(k, value, seconds) { return this.eval('set', [k], [value, ...(seconds ? [seconds] : [])]) }
   del(k) { return this.eval('del', [k]) }
   async prune() {
-    const result = await this.pool.query('DELETE FROM larp_access WHERE expires_at < now() AND key IN (SELECT key FROM larp_access WHERE expires_at < now() LIMIT 10000)')
+    const result = await this.pool.query('DELETE FROM larp_access WHERE expires_at < now() AND key IN (SELECT key FROM larp_access WHERE starts_with(key,$1) AND expires_at < now() LIMIT 10000)', [`${this.namespace}:`])
     return result.rowCount
   }
   close() { return this.pool.end() }
