@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { toBlob, toPng } from 'html-to-image'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -19,6 +18,8 @@ import {
   X,
 } from '@phosphor-icons/react'
 import PnlCard from './PnlCard.jsx'
+import AccessPanel, { AccessSummary } from './AccessPanel.jsx'
+import { studioRequest, useStudioAccess } from './useStudioAccess.js'
 import { futuresPresets, memecoinPresets, platforms } from './platforms.js'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger)
@@ -148,6 +149,9 @@ function ImageUpload({ label, value, onChange, onClear, hint }) {
 }
 
 function App() {
+  const studio = useStudioAccess()
+  const exportLock = useRef(false)
+  const lastExport = useRef(null)
   const [platformId, setPlatformId] = useState(() => {
     const requestedPlatform = new URLSearchParams(window.location.search).get('platform')
     return platforms.some((item) => item.id === requestedPlatform) ? requestedPlatform : 'binance'
@@ -224,9 +228,9 @@ function App() {
       setMessage('Choose a PNG, JPG, WebP, or GIF image.')
       return
     }
-    if (file.size > 12 * 1024 * 1024) {
+    if (file.size > 800 * 1024) {
       setExportState('error')
-      setMessage('Image is too large. Keep uploads under 12 MB.')
+      setMessage('Image is too large. Keep each upload under 800 KB.')
       return
     }
 
@@ -284,47 +288,52 @@ function App() {
     document.startViewTransition(() => setTheme(nextTheme))
   }
 
-  const exportOptions = {
-    cacheBust: true,
-    pixelRatio: 2,
-  }
-
-  const downloadCard = async () => {
-    if (!cardRef.current || exportState === 'loading') return
+  const exportCard = async (mode) => {
+    if (exportLock.current) return
+    exportLock.current = true
     setExportState('loading')
-    setMessage('Rendering your imaginary gains...')
+    setMessage('Rendering your card...')
+    const payload = { platformId, values, media: cardMedia }
+    const cacheKey = JSON.stringify(payload)
+    const getImage = async () => {
+      if (lastExport.current?.key === cacheKey) return lastExport.current.blob
+      const blob = await studioRequest('export', payload)
+      lastExport.current = { key: cacheKey, blob }
+      studio.refresh().catch(() => {})
+      return blob
+    }
     try {
-      const dataUrl = await toPng(cardRef.current, exportOptions)
-      const link = document.createElement('a')
-      link.download = `larpitalism-${platformId}-${values.pair.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`
-      link.href = dataUrl
-      link.click()
+      if (mode === 'copy' && navigator.clipboard && window.ClipboardItem) {
+        // Passing the promise immediately preserves the user gesture in Safari.
+        const imagePromise = getImage()
+        imagePromise.catch(() => {})
+        try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': imagePromise })]) }
+        catch (clipboardError) { await imagePromise; throw clipboardError }
+        setMessage('Copied. Reusing this same card does not use another free export.')
+      } else {
+        const blob = await getImage()
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.download = `larpitalism-${platformId}-${values.pair.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`
+        link.href = url
+        link.click()
+        setTimeout(() => URL.revokeObjectURL(url), 1000)
+        setMessage('Card downloaded. Reusing this same card does not use another free export.')
+      }
       setExportState('done')
-      setMessage('PNL card downloaded.')
-    } catch {
+    } catch (error) {
       setExportState('error')
-      setMessage('Export failed. Try again in a moment.')
-    }
+      if (error.code === 'ACCESS_REQUIRED') {
+        studio.setOpen(true)
+        studio.refresh().catch(() => {})
+      }
+      setMessage(mode === 'copy' && !error.code && lastExport.current?.key === cacheKey
+        ? 'Clipboard unavailable. Download this rendered card instead; it will not use another free export.'
+        : error.message || 'Export failed. Please retry.')
+    } finally { exportLock.current = false }
   }
-
-  const copyCard = async () => {
-    if (!cardRef.current || exportState === 'loading') return
-    if (!navigator.clipboard || !window.ClipboardItem) {
-      await downloadCard()
-      return
-    }
-    setExportState('loading')
-    setMessage('Copying card...')
-    try {
-      const blob = await toBlob(cardRef.current, exportOptions)
-      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
-      setExportState('done')
-      setMessage('Copied. Go post your imaginary alpha.')
-    } catch {
-      setExportState('error')
-      setMessage('Clipboard blocked. Use download instead.')
-    }
-  }
+  const downloadCard = () => exportCard('download')
+  const copyCard = () => exportCard('copy')
 
   const manifestoStart = ['Big', 'ideas.', 'Unreal', 'gains.']
   const manifestoEnd = ['Your', 'next', 'post', 'starts', 'here.']
@@ -368,7 +377,7 @@ function App() {
               <a className="button button-primary" href="#generator">Make your card <ArrowRight size={18} /></a>
               <a className="text-link" href="#platforms">Explore templates <ArrowRight size={17} /></a>
             </div>
-            <div className="hero-note hero-reveal"><span /> Free to create. No account needed.</div>
+            <div className="hero-note hero-reveal"><span /> 3 free exports. Hold or pay with LARP to continue.</div>
           </div>
           <div className="brand-hero-media hero-reveal" aria-label="Example simulated trading card">
             <div className="hero-art-label"><span>THE LARPITALIST</span><span>NO. 001 / &infin;</span></div>
@@ -503,11 +512,12 @@ function App() {
               <div className="card-stage">
                 <PnlCard ref={cardRef} platform={platform} values={values} media={cardMedia} />
               </div>
+              <AccessSummary studio={studio} />
               <div className="export-actions">
-                <button className="button button-primary" type="button" onClick={downloadCard} disabled={exportState === 'loading'}>
+                <button className="button button-primary" type="button" onClick={downloadCard} disabled={exportState === 'loading' || !studio.access}>
                   {exportState === 'loading' ? 'Rendering...' : 'Download PNG'} <DownloadSimple size={18} />
                 </button>
-                <button className="button button-secondary" type="button" onClick={copyCard} disabled={exportState === 'loading'}>
+                <button className="button button-secondary" type="button" onClick={copyCard} disabled={exportState === 'loading' || !studio.access}>
                   Copy image <Copy size={18} />
                 </button>
               </div>
@@ -606,6 +616,7 @@ One good-looking post.</h2>
         </section>
       </main>
 
+      <AccessPanel studio={studio} />
       <footer className="site-footer">
         <a className="footer-brand" href="#top"><img src="/brand/larpitalism-mark-small.png" width="128" height="128" alt="" /><span>LARPITALISM</span></a>
         <p>Simulated PNL cards for entertainment and parody.</p>
