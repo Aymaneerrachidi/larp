@@ -26,6 +26,7 @@ export function getConfig(env = process.env) {
     pricePair: env.LARP_PRICE_PAIR_ADDRESS?.toLowerCase() || '',
     priceChain: env.LARP_PRICE_DEX_CHAIN || (network.chainId === 4663 ? 'robinhood' : ''),
     minimumLiquidityUsd: 10000,
+    gmgnApiKey: env.GMGN_API_KEY?.trim() || '',
     freeLimit: 3,
   }
 }

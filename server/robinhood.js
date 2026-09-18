@@ -70,6 +70,7 @@ export class RobinhoodService {
       rawAmount: amount.toString(), nonce, fromBlock: blockNumber.toString(),
       createdAt: Date.now(), expiresAt: Date.now() + 5 * 60 * 1000,
       hours: this.config.paymentHours, amount: formatUnits(amount, decimals), priceUsd: this.config.priceUsd, unitPriceUsd: price.price, priceSource: price.source,
+      market: currency === 'LARP' ? { pairAddress: price.pairAddress, marketCapUsd: price.marketCapUsd, liquidityUsd: price.liquidityUsd, fetchedAt: price.fetchedAt } : null,
       tokenAddress: this.config.tokenAddress, treasury: this.config.treasury,
     }
   }

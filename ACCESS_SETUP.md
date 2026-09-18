@@ -48,6 +48,8 @@ To also enable LARP payments:
 - `LARP_PRICE_DEX_CHAIN`: defaults to `robinhood` on mainnet. Testnet has no default dollar-priced market.
 - After you set the CA, the backend queries DEX Screener's token-pairs endpoint and selects the highest-liquidity eligible pool for the **exact CA and chain**, with LARP as the base token and at least **$10,000 liquidity**. Matching symbols alone never qualify. No indexed eligible market means LARP quotes stay unavailable; ETH payments remain independent.
 - `LARP_PRICE_PAIR_ADDRESS`: optional reviewed pair/pool pin. Supports both 20-byte addresses and 32-byte Uniswap V4 pool IDs. If pinned, no alternate pool is selected.
+- `GMGN_API_KEY`: optional **server-only** read-only GMGN OpenAPI key. DEX Screener remains the primary source; HTTP errors, stale responses or no eligible market trigger a GMGN `/v1/token/info?chain=robinhood` lookup. GMGN must return the exact token/price addresses, an eligible main pool, at least $10,000 liquidity, and a positive USD price. A pinned pool is also respected by GMGN. This fallback only runs on chain 4663. The secret is never included in public configuration, quotes or frontend assets; redirects are rejected so the auth header cannot be forwarded to another host.
+- Quotes retain market-cap and liquidity metadata. GMGN market cap is calculated as `price.price × circulating_supply` using decimal integers; the payment amount is always calculated from **unit USD price**, not market cap. HTTP freshness checks cannot independently establish the age or accuracy of an indexer's underlying market observations.
 - Standard ERC-20 transfer behavior. Fee-on-transfer/no-op tokens are not supported; insufficient Transfer logs do not unlock a pass.
 
 Quotes last 5 minutes and use integer arithmetic rounded up to the nearest smallest token unit. Users see the exact amount, recipient, source and deadline before payment. ETH gas is separate. Price services failing or returning stale HTTP responses disable quotes. DEX Screener is an indexed spot source, not a manipulation-resistant oracle: review the liquidity and trustworthiness of the approved market before enabling LARP payments. For an immature market, leave LARP payments disabled and use ETH.
@@ -78,3 +80,4 @@ References:
 - https://eips.ethereum.org/EIPS/eip-6963
 - https://docs.cdp.coinbase.com/coinbase-app/track-apis/prices
 - https://docs.dexscreener.com/api/reference
+- https://github.com/GMGNAI/gmgn-skills (current Robinhood support, OpenAPI auth and token response schema)

@@ -85,7 +85,7 @@ export function createHandler(dependencies = {}) {
           if (!(await status()).config.paymentMethods[body.currency]) throw new HttpError(503, 'This payment method is not available yet. No payment will be requested.')
           const quote = await chain.quote(wallet, body.currency)
           await store.set(`quote:${quote.id}`, JSON.stringify(quote), 7 * 24 * 3600)
-          return json(200, { id: quote.id, transaction: quote.transaction, currency: quote.currency, amount: quote.amount, hours: quote.hours, priceUsd: quote.priceUsd, unitPriceUsd: quote.unitPriceUsd, priceSource: quote.priceSource, expiresAt: quote.expiresAt, tokenAddress: quote.tokenAddress, treasury: quote.treasury, chainId: quote.chainId, wallet: quote.wallet })
+          return json(200, { id: quote.id, transaction: quote.transaction, currency: quote.currency, amount: quote.amount, hours: quote.hours, priceUsd: quote.priceUsd, unitPriceUsd: quote.unitPriceUsd, priceSource: quote.priceSource, market: quote.market, expiresAt: quote.expiresAt, tokenAddress: quote.tokenAddress, treasury: quote.treasury, chainId: quote.chainId, wallet: quote.wallet })
         }
         if (typeof body.id !== 'string' || !/^[a-f0-9-]{36}$/.test(body.id)) throw new HttpError(400, 'Invalid payment reference.')
         const raw = await store.get(`quote:${body.id}`)
